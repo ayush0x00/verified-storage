@@ -1,29 +1,24 @@
 #include <iostream>
+
+#include "sha256.hpp"
 #include "Node.hpp"
+#include "NodeType.hpp"
 
-Node::Node(std::string hash)
+Node::Node() {
+    // Create an empty node
+    type = BLANK_NODE;
+    hash = computeHash("");
+}
+
+std::string Node::computeHash(std::string data)
 {
-    Node::hash = hash;
-    Node::parent = NULL;
+    return sha256(data);
 }
 
-Node *Node::createNode(std::string hash)
-{
-    Node *node = new Node(hash);
-    return node;
+std::string Node::getHash() {
+    return hash;
 }
 
-std::string Node::getHash()
-{
-    return this->hash;
+void Node::setHash(std::string data) {
+    hash = sha256(data);
 }
-
-void Node::assignType(std::string type) {
-    this->type = type;
-}
-
-void Node::assignParent(Node *parent)
-{
-    this->parent = parent;
-}
-

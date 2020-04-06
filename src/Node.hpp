@@ -1,20 +1,18 @@
 #ifndef NODE_H
 #define NODE_H
-#include <iostream>
 
-class Node
-{
-private:
-    std::string type;
-    std::string hash;
-    Node *parent;
+#include "sha256.hpp"
+#include "NodeType.hpp"
 
-public:
-    Node(std::string hash);
-    static Node *createNode(std::string hash);
-    std::string getHash();
-    void assignType(std::string type);
-    void assignParent(Node *parent);
+class Node {
+    private:
+        std::string hash;
+        SHA256 sha256;
+    public:
+        NodeType type;
+        std::string computeHash(std::string data);
+        std::string getHash();
+        void setHash(std::string data);
 };
 
 #endif
