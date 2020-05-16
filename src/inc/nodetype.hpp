@@ -1,5 +1,5 @@
-#ifndef NODE_TYPE_H
-#define NODE_TYPE_H
+#ifndef PMT_NODE_TYPE_H
+#define PMT_NODE_TYPE_H
 
 enum NodeType {
     BLANK_NODE,

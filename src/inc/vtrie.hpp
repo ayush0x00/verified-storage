@@ -1,5 +1,5 @@
-#ifndef VTRIE_H
-#define VTRIE_H
+#ifndef PMT_VTRIE_H
+#define PMT_VTRIE_H
 
 #include <vector>
 #include <map>
