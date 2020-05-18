@@ -9,7 +9,7 @@ Branch::Branch() {
     branches_.reserve(16);
 }
 
-Node Branch::FromBuffer(std::vector<std::vector<uint64_t>>& input) {
+Node Branch::FromBuffer(std::vector<std::vector<uint64_t>> &input) {
     input.resize(17);
     Branch node = Branch();
     // Todo Create template for slicing stl array slice it instead of looping
@@ -21,7 +21,7 @@ Node Branch::FromBuffer(std::vector<std::vector<uint64_t>>& input) {
     return node;
 }
 
-void Branch::SetBranch(const int loc, std::vector<uint64_t> input) {
+void Branch::SetBranch(const int loc, const std::vector<uint64_t> &input) {
     branches_[loc] = input;
 }
 

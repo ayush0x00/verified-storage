@@ -10,8 +10,8 @@
 #include "utils/hex.hpp"
 
 
-Node DecodeNode(const std::vector<uint64_t>& input) {
-    std::array<std::vector<uint64_t>, 17> decode_ = RLPDecoder::DecodeByteList(input);
+Node DecodeNode(const std::vector<uint64_t> &input) {
+    std::vector<std::vector<uint64_t>> decode_ = RLPDecoder::DecodeByteList(input);
 
     if(typeid(decode_[0]) != typeid(std::vector<uint64_t>)) {
         // Todo Throw error
@@ -20,7 +20,7 @@ Node DecodeNode(const std::vector<uint64_t>& input) {
     return DecodeRawNode(decode_);
 }
 
-Node DecodeRawNode(const std::array<std::vector<uint64_t>, 17>& input) {
+Node DecodeRawNode(const std::vector<std::vector<uint64_t>> &input) {
     if(input.size() == 17) {
         return Branch::FromBuffer(input);
     } else if(input.size() == 2) {
@@ -35,7 +35,7 @@ Node DecodeRawNode(const std::array<std::vector<uint64_t>, 17>& input) {
     }
 }
 
-bool IsRawNode(const std::array<std::vector<uint64_t>, 17>& input) {
+bool IsRawNode(const std::array<std::vector<uint64_t>, 17> &input) {
     bool status = true;
     for (auto node : input) {
         if(typeid(node) != typeid(std::vector<uint64_t>)) {
@@ -45,4 +45,4 @@ bool IsRawNode(const std::array<std::vector<uint64_t>, 17>& input) {
     }
 
     return status;
-}
+ }

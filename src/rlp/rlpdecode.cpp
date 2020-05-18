@@ -4,7 +4,7 @@
 #include "inc/rlpstring.hpp"
 
 
-std::vector<uint64_t> RLPDecoder::Decode(const std::vector<uint64_t>& bytes_input) {
+std::vector<uint64_t> RLPDecoder::Decode(const std::vector<uint64_t> &bytes_input) {
     std::vector<uint64_t> decoded_;
     const auto first_byte_ = bytes_input[0];
     int length_ {0};
@@ -44,7 +44,7 @@ std::vector<uint64_t> RLPDecoder::Decode(const std::vector<uint64_t>& bytes_inpu
 }
 
 
-std::string RLPDecoder::DecodeByte(const std::vector<uint64_t>& input) {
+std::string RLPDecoder::DecodeByte(const std::vector<uint64_t> &input) {
     if(input.empty()) {
         return BytesToString(EmptyByte());
     }
@@ -55,7 +55,7 @@ std::string RLPDecoder::DecodeByte(const std::vector<uint64_t>& input) {
 }
 
 
-std::string RLPDecoder::DecodeString(const std::string& input) {
+std::string RLPDecoder::DecodeString(const std::string &input) {
     if(input.empty()) {
         return BytesToString(EmptyByte());
     }
@@ -66,7 +66,7 @@ std::string RLPDecoder::DecodeString(const std::string& input) {
     return BytesToString(decoded_);
 }
 
-std::array<std::vector<uint64_t>, 17> DecodeByteList(const std::vector<uint64_t>& input) {
+std::array<std::vector<uint64_t>, 17> DecodeByteList(const std::vector<uint64_t> &input) {
     // Todo complete this
     std::array<std::vector<uint64_t>, 17> bytes_array_;
     bytes_array_[0] = input;

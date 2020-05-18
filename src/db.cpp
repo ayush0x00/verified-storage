@@ -9,7 +9,7 @@
 
 
 
-DBConnection::DBConnection(const std::string& db_file) {
+DBConnection::DBConnection(const std::string &db_file) {
     db_file_ = db_file;
 
     leveldb::Options options;
@@ -22,7 +22,7 @@ leveldb::Status DBConnection::GetStatus() {
     return status_;
 }
 
-std::vector<uint64_t> DBConnection::Get(const std::vector<uint64_t>& key) {
+std::vector<uint64_t> DBConnection::Get(const std::vector<uint64_t> &key) {
     std::string value_ {""};
     std::vector<uint64_t> result;
     const std::string key_ = BytesToString(key);
@@ -44,16 +44,14 @@ std::vector<uint64_t> DBConnection::Get(const std::vector<uint64_t>& key) {
     return result;
 }
 
-void DBConnection::Put(const std::vector<uint64_t>& key, const std::vector<uint64_t>& value) {
+void DBConnection::Put(const std::vector<uint64_t> &key, const std::vector<uint64_t> &value) {
     const std::string key_ = BytesToString(key);
     std::string value_ = BytesToString(value);
 
     uncommitted_.insert(std::make_pair(key_, value_));
-    
-    // status_ = db_->Put(leveldb::WriteOptions(), key_, value_);
 }
 
-void DBConnection::Delete(const std::vector<uint64_t>& key) {
+void DBConnection::Delete(const std::vector<uint64_t> &key) {
     const std::string key_ = BytesToString(key);
 
     auto iterator_ = uncommitted_.find(key_);
@@ -92,40 +90,21 @@ std::map<std::vector<uint64_t>, std::vector<uint64_t>> DBConnection::ReadAll() {
     return key_values_;
 }
 
-int main() {
-    DBConnection db_connection = DBConnection("/tmp/testdb");
-
-    std::string value {"Test"};
-    if (db_connection.GetStatus().ok()) {
-        db_connection.Put(StringToBytes(StringToHex("123")), StringToBytes(StringToHex(value)));
-        db_connection.Put(StringToBytes(StringToHex("456")), StringToBytes(StringToHex(value + "1")));
-        std::vector<uint64_t> value_;
-        value_ = db_connection.Get(StringToBytes(StringToHex("456")));
-        std::cout << BytesToString(value_) << std::endl;
+void DBConnection::BatchProcess(const std::vector<BatchDBOp> &ops) {
+    for(BatchDBOp element : ops) {
+        if(element.GetType() == "put") {
+            if(element.GetValue().empty()) {
+                // Todo Throw error
+                break;
+            }
+            Put(element.GetKey(), element.GetValue());
+        } else if(element.GetType() == "del") {
+            Delete(element.GetKey());
+        }
     }
 
-    if (db_connection.GetStatus().ok()) {
-        db_connection.Commit();
+    if(uncommitted_.size() > 0) {
+        Commit();
     }
 
-    if (db_connection.GetStatus().ok()) {
-        std::vector<uint64_t> value_;
-        value_ = db_connection.Get(StringToBytes(StringToHex("123")));
-        std::cout << BytesToString(value_) << std::endl;
-    }
-
-    if (db_connection.GetStatus().ok()) {
-        db_connection.Delete(StringToBytes(StringToHex("123")));
-        std::vector<uint64_t> value_;
-        value_ = db_connection.Get(StringToBytes(StringToHex("123")));
-        std::cout << BytesToString(value_) << std::endl;
-    }
-
-    std::map<std::vector<uint64_t>, std::vector<uint64_t>> key_values_;
-    std::cout << "Here" << std::endl;
-    key_values_ = db_connection.ReadAll();
-    std::map<std::vector<uint64_t>, std::vector<uint64_t>>::iterator it_;
-    for(it_ = key_values_.begin(); it_ != key_values_.end(); it_++) {
-        std::cout << BytesToString(it_->first) << ": " << BytesToString(it_->second) << std::endl;
-    }
 }
