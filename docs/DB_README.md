@@ -73,3 +73,35 @@ for(it_ = key_values_.begin(); it_ != key_values_.end(); it_++) {
     std::cout << BytesToString(it_->first) << ": " << BytesToString(it_->second) << std::endl;
 }
 ```
+
+### BatchProcess all the data
+
+*Batch processing reads multiple commands and execute them one after the other.*
+
+*The commands are as follow:*
+
+1. *PUT:* put
+2. *DELETE:* del
+
+```c++
+std::vector<uint64_t> key_ = StringToBytes(StringToHex("789"));
+std::vector<uint64_t> value_ = StringToBytes(StringToHex("This is it");
+
+std::vector<uint64_t> key_two_ = StringToBytes(StringToHex("123"));
+
+std::vector<uint64_t> key_three_ = StringToBytes(StringToHex("789"));
+std::vector<uint64_t> value_three_ = StringToBytes(StringToHex("This is it");
+
+if (db_connection.GetStatus().ok()) {
+    BatchDBOp obj_one_ = BatchDBOp("put", key_, value_);
+    BatchDBOp obj_two_ = BatchDBOp("del", key_two_);
+    BatchDBOp obj_three_ = BatchDBOp("put", key_three_, value_three_);
+
+    std::vector<BatchDBOp> batch_list_;
+    batch_list_.push_back(obj_one_);
+    batch_list_.push_back(obj_two_);
+    batch_list_.push_back(obj_three_);
+
+    db_connection.BatchProcess(batch_list_);
+}
+```
