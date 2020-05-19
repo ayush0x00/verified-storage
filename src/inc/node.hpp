@@ -3,16 +3,18 @@
 
 #include <vector>
 
+#include "alias.hpp"
+
 class Node {
     protected:
-        std::vector<uint64_t> value_;
+        Buffer value_;
 
     public:
-        std::vector<uint64_t> GetValue();
-        void SetValue(std::vector<uint64_t> input);
-        std::vector<std::vector<uint64_t>> Raw();
-        std::vector<uint64_t> Serialize();
-        std::vector<uint64_t> Hash();
+        Buffer GetValue();
+        void SetValue(Buffer input);
+        BufferArray Raw();
+        Buffer Serialize();
+        Buffer Hash();
 };
 
 #endif

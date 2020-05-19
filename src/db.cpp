@@ -7,8 +7,6 @@
 
 #include <iostream>
 
-
-
 DBConnection::DBConnection(const std::string &db_file) {
     db_file_ = db_file;
 
@@ -16,6 +14,10 @@ DBConnection::DBConnection(const std::string &db_file) {
     options.create_if_missing = true;
     
     status_ = leveldb::DB::Open(options, db_file, &db_);
+}
+
+bool DBConnection::operator!() {
+    return !db_file_.empty() && status_.ok() && db_;
 }
 
 leveldb::Status DBConnection::GetStatus() {

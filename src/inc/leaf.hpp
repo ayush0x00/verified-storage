@@ -10,8 +10,8 @@ class Leaf : public Node {
         std::vector<uint> nibbles_;
 
     public:
-        Leaf();
-        ~Leaf();
+        // Leaf();
+        // ~Leaf();
 
         Leaf(std::vector<uint> nibbles, std::vector<uint64_t> value);
 

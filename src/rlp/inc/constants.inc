@@ -1,5 +1,5 @@
 #ifndef RLP_CONSTANTS_H
-#define RLP_CONSTANTE_H
+#define RLP_CONSTANTS_H
 
 #define EMPTY_STRING 0x00
 #define NON_VALUE_STRING 0x80

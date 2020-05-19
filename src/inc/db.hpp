@@ -25,4 +25,6 @@ class DBConnection {
         void BatchProcess(const std::vector<BatchDBOp> &ops_);
 
         std::map<std::vector<uint64_t>, std::vector<uint64_t>> ReadAll();
+
+        bool operator!();
 };

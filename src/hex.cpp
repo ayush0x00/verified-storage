@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include "rlp/inc/constants.inc"
+#include "inc/constants.inc"
 
 
 std::vector<uint64_t> EmptyByte() {

@@ -9,11 +9,9 @@
 
 class FoundNode {
     private:
-        std::vector<uint64_t> node_ref_;
+        Buffer node_ref_;
         Node node_;
-        std::vector<uint> key_;
-        
-
+        Nibble key_;
 };
 
 #endif

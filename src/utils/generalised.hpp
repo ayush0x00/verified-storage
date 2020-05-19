@@ -18,7 +18,7 @@ std::string GetBytes(T input) {
 }
 
 template<typename T>
-std::vector<T> slice(const std::vector<T>& vect, int start, int end) {
+std::vector<T> Slice(const std::vector<T>& vect, int start, int end) {
    if(end = -1) {
        end = vect.size() - 1;
    }
