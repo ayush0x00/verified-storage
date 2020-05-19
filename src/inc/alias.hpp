@@ -6,14 +6,14 @@
 
 #include "batchdbop.hpp"
 
-using uint = unsigned int;
+using uint_t = unsigned int;
 
-using Nibble = std::vector<uint>;
+using nibble_t = std::vector<uint_t>;
 
-using Buffer = std::vector<uint64_t>;
+using buffer_t = std::vector<uint64_t>;
 
-using BufferArray = std::vector<std::vector<uint64_t>>;
+using bufferarray_t = std::vector<std::vector<uint64_t>>;
 
-using BatchDBOpArray = std::vector<BatchDBOp>;
+using batchdboparray_t = std::vector<BatchDBOp>;
 
 #endif

@@ -3,7 +3,7 @@
 #include "utils/hex.hpp"
 #include "inc/constants.inc"
 
-VTrie::VTrie(DBConnection &db, const Buffer &root) {
+VTrie::VTrie(DBConnection &db, const buffer_t &root) {
     EMPTY_TRIE_ROOT_ = EmptyByte();
     db_ = !db ? db : DBConnection(DEFAULT_DB_FILE);
     root_ = EMPTY_TRIE_ROOT_;
@@ -12,19 +12,19 @@ VTrie::VTrie(DBConnection &db, const Buffer &root) {
     }
 }
 
-Buffer VTrie::GetRoot() {
+buffer_t VTrie::GetRoot() {
     return root_;
 }
 
-void VTrie::Root(const Buffer &root) {
+void VTrie::Root(const buffer_t &root) {
     SetRoot(root);
 }
 
-void VTrie::SetRoot(const Buffer &root) {
+void VTrie::SetRoot(const buffer_t &root) {
     root_ = root.size() ? root : EMPTY_TRIE_ROOT_;
 }
 
-Node VTrie::LookupNode(const BufferArray &node) {
+Node VTrie::LookupNode(const bufferarray_t &node) {
 
 }
 
@@ -40,43 +40,43 @@ void VTrie::FindDbNodes() {
 
 }
 
-void VTrie::UpdateNode(const Buffer &key, const Buffer &value, const Nibble &key_reminder, const Node stack[]) {
+void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, const nibble_t &key_reminder, const Node stack[]) {
 
 }
 
-void VTrie::WalkTree(const Buffer &root) {
+void VTrie::WalkTree(const buffer_t &root) {
 
 }
 
-void VTrie::SaveStack(const Nibble &key, const std::stack<Node> &stack, const BatchDBOpArray &op_stack) {
+void VTrie::SaveStack(const nibble_t &key, const std::stack<Node> &stack, const batchdboparray_t &op_stack) {
 
 }
 
-void VTrie::DeleteNode(const Buffer &key, const Node stack[]) {
+void VTrie::DeleteNode(const buffer_t &key, const Node stack[]) {
 
 }
 
-void VTrie::CreateInitilNode(const Buffer &key, const Buffer &value) {
+void VTrie::CreateInitilNode(const buffer_t &key, const buffer_t &value) {
 
 }
 
-BufferArray VTrie::FormatNode(const Node &node, const bool top_level, const BatchDBOpArray &op_stack, const bool remove) {
+bufferarray_t VTrie::FormatNode(const Node &node, const bool top_level, const batchdboparray_t &op_stack, const bool remove) {
 
 }
 
-VTrie VTrie::FromProof(const BufferArray &proof_nodes, const VTrie &proof_trie) {
+VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, const VTrie &proof_trie) {
 
 }
 
-BufferArray VTrie::Prove(const VTrie &trie, const Buffer &key) {
+bufferarray_t VTrie::Prove(const VTrie &trie, const buffer_t &key) {
 
 }
 
-Buffer VTrie::VerifyProof(const Buffer &root_hash, const Buffer &key, const BufferArray &proof_nodes) {
+buffer_t VTrie::VerifyProof(const buffer_t &root_hash, const buffer_t &key, const bufferarray_t &proof_nodes) {
 
 }
 
-Path VTrie::FindPath(const Buffer &key) {
+Path VTrie::FindPath(const buffer_t &key) {
 
 }
 
@@ -84,30 +84,30 @@ VTrie VTrie::Copy() {
 
 }
 
-void VTrie::Batch(const BatchDBOpArray &op_stack) {
+void VTrie::Batch(const batchdboparray_t &op_stack) {
 
 }
 
-bool VTrie::CheckRoot(const Buffer &root) {
+bool VTrie::CheckRoot(const buffer_t &root) {
 
 }
 
-Buffer VTrie::Select(const Buffer &key) {
+buffer_t VTrie::Select(const buffer_t &key) {
 
 }
 
-Buffer VTrie::Select(const Buffer &root_hash, const Buffer &key) {
+buffer_t VTrie::Select(const buffer_t &root_hash, const buffer_t &key) {
 
 }
 
-bool VTrie::Insert(const Buffer &key, const Buffer &value) {
+bool VTrie::Insert(const buffer_t &key, const buffer_t &value) {
 
 }
 
-bool VTrie::Delet(const Buffer &key) {
+bool VTrie::Delet(const buffer_t &key) {
 
 }
 
-bool VTrie::Update(const Buffer &key, const Buffer &value) {
+bool VTrie::Update(const buffer_t &key, const buffer_t &value) {
 
 }

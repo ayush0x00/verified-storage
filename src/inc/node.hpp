@@ -7,14 +7,14 @@
 
 class Node {
     protected:
-        Buffer value_;
+        buffer_t value_;
 
     public:
-        Buffer GetValue();
-        void SetValue(Buffer input);
-        BufferArray Raw();
-        Buffer Serialize();
-        Buffer Hash();
+        buffer_t GetValue();
+        void SetValue(buffer_t input);
+        bufferarray_t Raw();
+        buffer_t Serialize();
+        buffer_t Hash();
 };
 
 #endif

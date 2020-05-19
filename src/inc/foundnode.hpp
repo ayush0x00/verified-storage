@@ -9,9 +9,9 @@
 
 class FoundNode {
     private:
-        Buffer node_ref_;
+        buffer_t node_ref_;
         Node node_;
-        Nibble key_;
+        nibble_t key_;
 };
 
 #endif
