@@ -9,16 +9,16 @@
 class Path {
     private:
         Node node_;
-        std::vector<uint> remaining_;
+        nibble_t remaining_;
         std::stack<Node> stack_;
 
     public:
-        Path(const Node &node, const std::vector<uint> &remaining, const std::stack<Node> &stack);
+        Path(const Node &node, const nibble_t &remaining, const std::stack<Node> &stack);
 
         Node GetNode();
         void SetNode(const Node &node);
-        std::vector<uint> GetRemaining();
-        void SetRemaining(const std::vector<uint> &remaining);
+        nibble_t GetRemaining();
+        void SetRemaining(const nibble_t &remaining);
         std::stack<Node> GetStack();
         void SetStack(const std::stack<Node> &stack);
 };
