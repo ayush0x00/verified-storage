@@ -7,19 +7,19 @@
 
 class Branch : public Node {
     private:
-        std::vector<std::vector<uint64_t>> branches_;
+        bufferarray_t branches_;
 
     public:
         // Branch();
         // ~Branch();
 
-        static Node FromBuffer(std::vector<std::vector<uint64_t>> &input);
-        void SetBranch(const int loc, const std::vector<uint64_t> &input);
-        std::vector<uint64_t> GetBranch(const int input);
-        std::vector<std::vector<uint64_t>> GetBranches();
-        std::map<int, std::vector<uint64_t>> GetChildren();
+        static Node FromBuffer(const bufferarray_t &input);
+        void SetBranch(const int loc, const buffer_t &input);
+        buffer_t GetBranch(const int input);
+        bufferarray_t GetBranches();
+        std::map<int, buffer_t> GetChildren();
 
-        std::vector<std::vector<uint64_t>> Branch::Raw();
+        bufferarray_t Branch::Raw();
 };
 
 #endif
