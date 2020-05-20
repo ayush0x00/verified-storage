@@ -10,35 +10,38 @@
 #include "utils/hex.hpp"
 
 
-Node DecodeNode(const std::vector<uint64_t> &input) {
-    std::vector<std::vector<uint64_t>> decode_ = RLPDecoder::DecodeByteList(input);
+Node DecodeNode(const buffer_t &input) {
+    bufferarray_t decode_ = RLPDecoder::DecodeByteList(input);
 
-    if(typeid(decode_[0]) != typeid(std::vector<uint64_t>)) {
+    if(typeid(decode_.at(0)) != typeid(buffer_t)) {
         // Todo Throw error
         return Node();
     }
+
     return DecodeRawNode(decode_);
 }
 
-Node DecodeRawNode(const std::vector<std::vector<uint64_t>> &input) {
+Node DecodeRawNode(const bufferarray_t &input) {
     if(input.size() == 17) {
         return Branch::FromBuffer(input);
     } else if(input.size() == 2) {
-        std::vector<uint> nibbles_ = BufferToNibble(BytesToString(input[0]));
+        nibble_t nibbles_ = BufferToNibble(BytesToString(input.at(0)));
+        
         if(IsTerminator(nibbles_)) {
             return Leaf(Leaf::DecodeKey(nibbles_), input[1]);
         }
-        return Extension(Extension::DecodeKey(nibbles_), input[1]);
+
+        return Extension(Extension::DecodeKey(nibbles_), input.at(1));
     } else {
         // Todo Throw invalid error
         return Node();
     }
 }
 
-bool IsRawNode(const std::array<std::vector<uint64_t>, 17> &input) {
+bool IsRawNode(const bufferarray_t &input) {
     bool status = true;
     for (auto node : input) {
-        if(typeid(node) != typeid(std::vector<uint64_t>)) {
+        if(typeid(node) != typeid(buffer_t)) {
             status = false;
             break;
         }
