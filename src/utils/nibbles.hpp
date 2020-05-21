@@ -10,7 +10,15 @@
  * @param input key to convert to nibble
  * @return std::vector<uint> Nibble representation of the input
  */
-std::vector<uint> BufferToNibble(const std::string& input);
+std::vector<uint> StringToNibble(const std::string& input);
+
+/**
+ * @brief Converts a string to nibble
+ * 
+ * @param input key to convert to nibble
+ * @return std::vector<uint> Nibble representation of the input
+ */
+std::vector<uint> BufferToNibble(const std::vector<uint64_t>& input);
 
 /**
  * @brief Converts a nibble to buffer
@@ -85,7 +93,18 @@ std::string GetBytes(T input);
  * @return std::vector<T> Sliced vector
  */
 template<typename T>
-std::vector<T> slice(const std::vector<T>& v, int start, int end=-1);
+std::vector<T> Slice(const std::vector<T>& v, int start, int end=-1);
+
+/**
+ * @brief Checks if the object is an instance of the Template class name
+ * 
+ * @tparam Base Base class
+ * @tparam T Class name whose type the object needs to be checked
+ * @return true if the object is instance of T
+ * @return false if object is not instance of T
+ */
+template<typename Base, typename T>
+inline bool instanceof(const T*);
 
 #include "generalised.hpp"
 

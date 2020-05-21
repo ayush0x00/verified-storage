@@ -30,4 +30,9 @@ std::vector<T> Slice(const std::vector<T>& vect, int start, int end) {
    return sliced_vector;
 }
 
+template<typename Base, typename T>
+inline bool instanceof(const T*) {
+   return std::is_base_of<Base, T>::value;
+}
+
 #endif
