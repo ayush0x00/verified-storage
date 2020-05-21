@@ -1,10 +1,14 @@
 #include "vtrie.hpp"
 
 #include "utils/hex.hpp"
+#include "utils/nibbles.hpp"
 #include "inc/constants.inc"
 #include "inc/batchdbop.hpp"
 #include "keccak/keccak_buffer.hpp"
 #include "inc/nodeutils.hpp"
+#include "inc/leaf.hpp"
+#include "inc/branch.hpp"
+#include "inc/extension.hpp"
 
 VTrie::VTrie() {
     is_defined_ = false;
@@ -59,6 +63,100 @@ void VTrie::IsDefined(const bool is_defined) {
 //     return root_ == EMPTY_TRIE_ROOT_;
 // }
 
+void VTrie::PutNode(Node &node) {
+    buffer_t hash_ = node.Hash();
+    buffer_t serialized_ = node.Serialize();
+    db_.Put(hash_, serialized_);
+}
+
+void VTrie::CreateInitilNode(const buffer_t &key, const buffer_t &value) {
+    Leaf new_node = Leaf(BufferToNibble(key), value);
+    root_ = new_node.Hash()
+    PutNode(new_node);
+}
+
+bool VTrie::Delet(const buffer_t &key) {
+    // Todo Look for the lock and add lock before starting this process
+    bool status_ = false;
+    Path path_ = FindPath(key);
+    if(path_.GetNode() != NULL) {
+        DeleteNode(key, path_.GetStack())
+        status_ = true;
+    }
+    // Todo release the lock
+
+    return status_;
+}
+
+buffer_t VTrie::Select(const buffer_t &key) {
+    Path path_ = FindPath(key);
+    buffer_t value_;
+    if(path_.GetNode() && path_.GetRemaining().size() == 0) {
+        value_ = path_.GetNode().GetValue();
+    }
+
+    return value_;
+}
+
+bool VTrie::Insert(const buffer_t &key, const buffer_t &value) {
+    return Put(key, value);
+}
+
+bool VTrie::Put(const buffer_t &key, const buffer_t &value) {
+    bool status_ = false;
+    if(value.empty() || BytesToString(value).empty()) {
+        // If value is empty delete
+        status_ = Delet(key);
+    }
+
+    // Todo Look for the lock and add lock before starting this process
+    // Todo check for Keccak-256 hash of the RLP of null
+    if(root_ == EmptyByte()) {
+        // No root, initialize this trie
+        CreateInitilNode(key, value);
+        status_ = true;
+    } else {
+        // Search for the given key or it's nearest node
+        Path path_ = FindPath(key);
+        // Now Update
+        UpdateNode(key, value, path_.GetRemaining(), path_.GetStack());
+        status_ = true;
+    }
+    // Todo release the lock
+
+    return status_;
+}
+
+Path VTrie::FindPath(const buffer_t &key) {
+    std::stack<Node> stack_;
+    nibble_t target_key_ = BufferToNibble(key);
+
+    nibble_t key_reminder_ = Slice(target_key_, MatchingNibbleLength());
+}
+
+void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, const nibble_t &key_reminder, std::vector<Node> &stack) {
+    batchdboparray_t to_save_;
+    
+    Node last_node_ = stack.back();
+    stack.pop_back();
+
+    nibble_t key_nibbles_ = BufferToNibble(key);
+    bool match_leaf_ = false;
+
+    if(last_node_.GetNodeType() == LEAF_NODE) {
+        int leaf_ = 0;
+        for(std::string::size_type i = 0; i < stack.size(); i++) {
+            Node node_ = stack.at(i);
+            if(node_.GetNodeType() == BRANCH_NODE) {
+                leaf_++;
+            } else {
+                leaf_ += 
+            }
+            
+        }
+    }
+}
+
 VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie) {
     batchdboparray_t op_stack_;
     
@@ -73,7 +171,6 @@ VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie) {
         proof_trie = VTrie();
         if(op_stack_.at(0).GetKey().size()) {
             proof_trie.SetRoot(op_stack_.at(0).GetKey());
-            // proof_trie.root_ = op_stack_.at(0).GetKey();
         }
     }
 
@@ -83,8 +180,13 @@ VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie) {
 }
 
 bufferarray_t VTrie::Prove(const VTrie &trie, const buffer_t &key) {
-    // Todo Need to look into this stage
-    Path stack_ = trie.FindPath(key);
+    Path path_ = trie.FindPath(key);
+    bufferarray_t proof_;
+    for(Node element_ : path_.GetStack()) {
+        proof_.push_back(element_.Serialize());
+    }
+
+    return proof_;
 }
 
 buffer_t VTrie::VerifyProof(const buffer_t &root_hash, const buffer_t &key, const bufferarray_t &proof_nodes) {
@@ -93,46 +195,6 @@ buffer_t VTrie::VerifyProof(const buffer_t &root_hash, const buffer_t &key, cons
     proof_trie_ = VTrie.FromProof(proof_nodes, proof_trie_);
 
     return proof_trie_.Select(key);
-}
-
-buffer_t VTrie::Select(const buffer_t &key) {
-    Path path_ = FindPath(key);
-    buffer_t value_;
-    if(path_.GetNode() && path_.GetRemaining().size() == 0) {
-        value_ = path_.GetNode().GetValue();
-    }
-
-    return value_;
-}
-
-bool VTrie::Insert(const buffer_t &key, const buffer_t &value) {
-    if(value.empty() || value.data() == '') {
-        // If value is empty delete
-        Delet(key);
-    }
-
-    if(root_ == EmptyByte()) {
-        // No root, initialize this trie
-        CreateInitilNode(key, value);
-    } else {
-        // Search for the given key or it's nearest node
-        Path path_ = FindPath(key);
-        // Now Update
-        UpdateNode(key, value, path_.GetRemaining(), path_.GetStack());
-    }
-    
-
-}
-
-bool VTrie::Delet(const buffer_t &key) {
-    bool status_ = false;
-    Path path_ = FindPath(key);
-    if(path_.GetNode() != NULL) {
-        DeleteNode(key, path_.GetStack())
-        status_ = true;
-    }
-
-    return status_;
 }
 
 Node VTrie::LookupNode(const bufferarray_t &node) {
@@ -149,19 +211,11 @@ Node VTrie::LookupNode(const bufferarray_t &node) {
     return found_node_;
 }
 
-void VTrie::PutNode(const Node &node) {
-
-}
-
 void VTrie::FindValueNodes() {
 
 }
 
 void VTrie::FindDbNodes() {
-
-}
-
-void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, const nibble_t &key_reminder, const Node stack[]) {
 
 }
 
@@ -177,15 +231,7 @@ void VTrie::DeleteNode(const buffer_t &key, const std::stack<Node> &stack) {
 
 }
 
-void VTrie::CreateInitilNode(const buffer_t &key, const buffer_t &value) {
-
-}
-
 bufferarray_t VTrie::FormatNode(const Node &node, const bool top_level, const batchdboparray_t &op_stack, const bool remove) {
-
-}
-
-Path VTrie::FindPath(const buffer_t &key) {
 
 }
 
