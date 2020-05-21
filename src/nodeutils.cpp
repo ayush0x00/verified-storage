@@ -25,7 +25,7 @@ Node DecodeRawNode(const bufferarray_t &input) {
     if(input.size() == 17) {
         return Branch::FromBuffer(input);
     } else if(input.size() == 2) {
-        nibble_t nibbles_ = BufferToNibble(BytesToString(input.at(0)));
+        nibble_t nibbles_ = StringToNibble(BytesToString(input.at(0)));
         
         if(IsTerminator(nibbles_)) {
             return Leaf(Leaf::DecodeKey(nibbles_), input[1]);
