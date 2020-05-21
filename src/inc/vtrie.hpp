@@ -17,10 +17,10 @@ class VTrie {
         // Todo Add Semaphore for locking the resource under processing
 
         Node LookupNode(const bufferarray_t &node);
-        void PutNode(const Node &node);
+        void PutNode(Node &node);
         void FindValueNodes(); // Todo need to check what should be passed as parameter
         void FindDbNodes(); // Todo need to check what should be passed as parameter
-        void UpdateNode(const buffer_t &key, const buffer_t &value, const nibble_t &key_reminder, const Node stack[]);
+        void UpdateNode(const buffer_t &key, const buffer_t &value, const nibble_t &key_reminder, std::vector<Node> &stack);
         void WalkTrie(const buffer_t &root); // Todo need to check what should be passed as parameter
         void SaveStack(const nibble_t &key, const std::stack<Node> &stack, const batchdboparray_t &op_stack);
         void DeleteNode(const buffer_t &key, const std::stack<Node> &stack);
@@ -49,6 +49,7 @@ class VTrie {
         
         buffer_t Select(const buffer_t &key);
         buffer_t Select(const buffer_t &root_hash, const buffer_t &key);
+        bool Put(const buffer_t &key, const buffer_t &value);
         bool Insert(const buffer_t &key, const buffer_t &value);
         bool Delet(const buffer_t &key);
         bool Update(const buffer_t &key, const buffer_t &value);
