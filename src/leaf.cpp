@@ -6,6 +6,7 @@
 Leaf::Leaf(std::vector<uint> nibbles, std::vector<uint64_t> value) {
     nibbles_ = nibbles;
     value_ = value;
+    node_type_ = LEAF_NODE;
 }
 
 std::vector<uint> Leaf::EncodeKey(const std::vector<uint>& input) {

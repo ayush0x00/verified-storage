@@ -6,20 +6,22 @@
 
 Branch::Branch() {
     branches_.reserve(16);
+    node_type_ = BRANCH_NODE;
 }
 
 Node Branch::FromBuffer(const bufferarray_t &input) {
-    bufferarray_t buffer_(input);
+    bufferarray_t buffer_arr_(input);
     if(input.size() > 17) {
-        buffer_.resize(17);
+        buffer_arr_.resize(17);
     }
+    
     Branch node = Branch();
     // Todo Create template for slicing stl array slice it instead of looping
-    for(std::string::size_type i = 0; i < buffer_.size() - 1; i++) {
-        node.SetBranch(i, buffer_.at(i));
+    for(std::string::size_type i = 0; i < buffer_arr_.size() - 1; i++) {
+        node.SetBranch(i, buffer_arr_.at(i));
     }
 
-    node.SetValue(input.at(buffer_.size() - 1));
+    node.SetValue(input.at(buffer_arr_.size() - 1));
 
     return node;
 }

@@ -5,6 +5,18 @@
 #include "keccak/keccak_buffer.hpp"
 
 
+Node::Node() {
+    node_type_ = BLANK_NODE;
+}
+
+char Node::GetNodeType() {
+    return node_type_;
+}
+
+void Node::SetNodeType(char input) {
+    node_type_ = input;
+}
+
 buffer_t Node::GetValue() {
     return value_;
 }

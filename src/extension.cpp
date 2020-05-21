@@ -5,6 +5,7 @@
 Extension::Extension(std::vector<uint> nibble, std::vector<uint64_t> value) {
     nibble_ = nibble;
     value_ = value;
+    node_type_ = EXTENSION_NODE;
 }
 
 std::vector<uint> Extension::EncodeKey(const std::vector<uint>& input) {
