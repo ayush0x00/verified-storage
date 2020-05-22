@@ -5,8 +5,6 @@
 
 #include "utils/hex.hpp"
 
-#include <iostream>
-
 DBConnection::DBConnection(const std::string &db_file) {
     db_file_ = db_file;
 
