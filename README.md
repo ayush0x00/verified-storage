@@ -14,7 +14,7 @@ C++
 - [x] Implement RLP and use for encoding values
 - [x] Implement KECCAK256 and replace sha256 hash generation by KECCAK256
 - [x] Try to get rid of all the pointers.
-- [] Integrate with boost library
+- [ ] Integrate with boost library
 - [] Add CMakeList
 - [] Create Toolchain compatible for Linux
 - [] Create Toolchain compatible for Win32/64
