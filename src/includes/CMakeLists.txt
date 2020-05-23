@@ -1,0 +1,14 @@
+add_library(
+    alias.hpp
+    batchdbop.hpp
+    branch.hpp
+    constants.hpp
+    db.hpp
+    extension.hpp
+    leaf.hpp
+    node.hpp
+    nodetype.hpp
+    nodeutils.hpp
+    path.hpp
+    vtrie.hpp
+)

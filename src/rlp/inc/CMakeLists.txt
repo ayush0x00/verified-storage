@@ -1,0 +1,9 @@
+add_library(
+    constants.hpp
+    rlpdecode.hpp
+    rlpencode.hpp
+    rlplist.hpp
+    rlpstring.hpp
+    utils.hpp
+    template_utils.hpp
+)
