@@ -1,14 +1,14 @@
-#include "inc/batchdbop.hpp"
+#include "includes/batchdbop.hpp"
 
-#include <iostream>
+#include <string>
 
-BatchDBOp::BatchDBOp(const std::string& type, const std::vector<uint64_t>& key) {
+BatchDBOp::BatchDBOp(const std::string& type, const buffer_t& key) {
     type_ = type;
     key_ = key;
     value_ = {};
 }
 
-BatchDBOp::BatchDBOp(const std::string& type, const std::vector<uint64_t>& key, const std::vector<uint64_t>& value) {
+BatchDBOp::BatchDBOp(const std::string& type, const buffer_t& key, const buffer_t& value) {
     type_ = type;
     key_ = key;
     value_ = value;
@@ -22,18 +22,18 @@ void BatchDBOp::GetType(const std::string& type) {
     type_ = type;
 }
 
-std::vector<uint64_t> BatchDBOp::GetKey() {
+buffer_t BatchDBOp::GetKey() {
     return key_;
 }
 
-void BatchDBOp::SetKey(const std::vector<uint64_t>& key) {
+void BatchDBOp::SetKey(const buffer_t& key) {
     key_ = key;
 }
 
-std::vector<uint64_t> BatchDBOp::GetValue() {
+buffer_t BatchDBOp::GetValue() {
     return value_;
 }
 
-void BatchDBOp::SetValue(const std::vector<uint64_t>& value) {
+void BatchDBOp::SetValue(const buffer_t& value) {
     value_ = value;
 }

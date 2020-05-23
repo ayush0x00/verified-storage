@@ -1,37 +1,36 @@
-#include "inc/extension.hpp"
+#include "includes/extension.hpp"
 
+#include "includes/nodetype.hpp"
 #include "utils/nibbles.hpp"
 
-Extension::Extension(std::vector<uint> nibble, std::vector<uint64_t> value) {
+Extension::Extension(nibble_t nibble, buffer_t value) {
     nibble_ = nibble;
     value_ = value;
     node_type_ = EXTENSION_NODE;
 }
 
-std::vector<uint> Extension::EncodeKey(const std::vector<uint>& input) {
+nibble_t Extension::EncodeKey(const nibble_t& input) {
     return AddHexPrefix(input, false);
 }
 
-std::vector<uint> DecodeKey(const std::vector<uint>& input) {
+nibble_t DecodeKey(const nibble_t& input) {
     return RemoveHexPrefix(input);
 }
 
-std::vector<uint> Extension::GetKey() {
+nibble_t Extension::GetKey() {
     return nibble_;
 }
 
-void Extension::SetKey(std::vector<uint> input) {
+void Extension::SetKey(nibble_t input) {
     nibble_ = input;
 }
 
-std::vector<uint> Extension::EncodedKey() {
+nibble_t Extension::EncodedKey() {
     return Extension::EncodeKey(nibble_);
 }
 
-std::vector<std::vector<uint64_t>> Extension::Raw() {
-    std::vector<std::vector<uint64_t>> raw_;
+bufferarray_t Extension::Raw() {
+    bufferarray_t raw_;
     raw_.push_back(NibbleToBuffer(EncodedKey()));
     raw_.push_back(value_);
 }
-
-

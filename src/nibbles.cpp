@@ -1,14 +1,15 @@
 #include "utils/nibbles.hpp"
 
+#include "includes/alias.hpp"
 #include "utils/hex.hpp"                                                                                                                                       
 
-std::vector<uint> StringToNibble(const std::string& input) {
-    std::vector<uint64_t> buffer_ = StringToBytes(StringToHex(input));
+nibble_t StringToNibble(const std::string& input) {
+    buffer_t buffer_ = StringToBytes(StringToHex(input));
     return BufferToNibble(buffer_);
 }
 
-std::vector<uint> BufferToNibble(const std::vector<uint64_t>& input) {
-    std::vector<uint> nibbles_;
+nibble_t BufferToNibble(const buffer_t& input) {
+    nibble_t nibbles_;
     nibbles_.resize(input.size() * 2);
 
     for(std::string::size_type i = 0; i < input.size(); i++) {
@@ -21,8 +22,8 @@ std::vector<uint> BufferToNibble(const std::vector<uint64_t>& input) {
     return nibbles_;
 }
 
-std::vector<uint64_t> NibbleToBuffer(const std::vector<uint>& input) {
-    std::vector<uint64_t> buffer_;
+buffer_t NibbleToBuffer(const nibble_t& input) {
+    buffer_t buffer_;
     buffer_.resize(input.size() / 2);
 
     for(std::string::size_type i = 0; i < buffer_.size(); i++) {
@@ -33,7 +34,7 @@ std::vector<uint64_t> NibbleToBuffer(const std::vector<uint>& input) {
     return buffer_;
 }
 
-int MatchingNibbleLength(std::vector<uint>& input_1, std::vector<uint>& input_2) {
+int MatchingNibbleLength(nibble_t& input_1, nibble_t& input_2) {
     std::string::size_type i = 0;
     while((input_1.at(i) == input_2.at(i)) && input_1.size() > i) {
         i++;
@@ -42,13 +43,13 @@ int MatchingNibbleLength(std::vector<uint>& input_1, std::vector<uint>& input_2)
     return i;
 }
 
-bool DoKeysMatch(std::vector<uint>& input_1, std::vector<uint>& input_2) {
+bool DoKeysMatch(nibble_t& input_1, nibble_t& input_2) {
     int length_ = MatchingNibbleLength(input_1, input_2);
     return length_ == input_1.size() && length_ == input_2.size();
 }
 
-std::vector<uint> AddHexPrefix(const std::vector<uint>& input, bool terminator) {
-    std::vector<uint> bytes_;
+nibble_t AddHexPrefix(const nibble_t& input, bool terminator) {
+    nibble_t bytes_;
 
     if(input.size() % 2) {
         bytes_.push_back(1);
@@ -66,41 +67,14 @@ std::vector<uint> AddHexPrefix(const std::vector<uint>& input, bool terminator) 
     return bytes_;
 }
 
-std::vector<uint> RemoveHexPrefix(const std::vector<uint>& input) {
-    std::vector<uint> bytes_;
+nibble_t RemoveHexPrefix(const nibble_t& input) {
+    nibble_t bytes_;
 
     bytes_ = (input.at(0) % 2) ? Slice(input, 1) : Slice(input, 2);
 
     return bytes_;
 }
 
-bool IsTerminator(const std::vector<uint>& input) {
+bool IsTerminator(const nibble_t& input) {
     return input.at(0) > 1;
-}
-
-
-
-int main() {
-    std::string test = "test";
-
-    std::vector<uint> nibble_ = StringToNibble(test);
-    std::cout << "Nibble: " << GetBytes(nibble_) << std::endl;
-
-    std::vector<uint64_t> buffer_ = NibbleToBuffer(nibble_);
-    std::cout << "Buffer: " << GetBytes(buffer_) << std::endl;
-
-    std::vector<uint> nibble_1_ = StringToNibble("testa");
-    std::cout << "Nibble: " << GetBytes(nibble_1_) << std::endl;
-    std::cout << "Matching: " << MatchingNibbleLength(nibble_, nibble_1_) << std::endl;
-    std::cout << "Key Matching: " << DoKeysMatch(nibble_, nibble_1_) << std::endl;
-
-    std::vector<uint> hex_nibble_ = AddHexPrefix(nibble_1_, false);
-    std::cout << "Add Hex Prefix: " << GetBytes(hex_nibble_) << std::endl;
-
-    std::cout << "Is Terminating: " << IsTerminator(hex_nibble_) << std::endl;
-
-    hex_nibble_ = RemoveHexPrefix(hex_nibble_);
-    std::cout << "Remove Hex Prefix: " << GetBytes(hex_nibble_) << std::endl;
-
-    return 0;
 }
