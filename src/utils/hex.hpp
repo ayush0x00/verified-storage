@@ -75,10 +75,11 @@ uint64_t HexToInteger(const std::string& input);
  * @brief Convert a string to hexadecimal format
  * 
  * @param input string to be converted to hexadecimal format
+ * @param prefix flag to indicate whether to add `0x` (hex) prefix to the hex string or not.
  * @param upper flag to indicate whether to convert hex string to uppercase. Default false
  * @return std::string String having hexadecimal representation of the input string
  */
-std::string StringToHex(const std::string& input, bool upper=false);
+std::string StringToHex(const std::string& input, bool prefix=true, bool upper=false);
 
 /**
  * @brief Convert a hexadecimal string to human readable string

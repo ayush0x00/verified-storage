@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include "inc/constants.inc"
+#include "includes/constants.hpp"
 
 
 std::vector<uint64_t> EmptyByte() {
@@ -62,7 +62,7 @@ uint64_t HexToInteger(const std::string& input) {
     return number;
 }
 
-std::string StringToHex(const std::string& input, bool upper) {
+std::string StringToHex(const std::string& input, bool prefix, bool upper) {
     std::ostringstream stream_;
 
     unsigned int converter_ {0};
@@ -74,7 +74,7 @@ std::string StringToHex(const std::string& input, bool upper) {
             std::setw(2) << (upper ? std::uppercase : std::nouppercase) << converter_;
     }
 
-    return InsertHexPrefix(stream_.str());
+    return prefix ? InsertHexPrefix(stream_.str()) : stream_.str();
 }
 
 std::string HexToString(const std::string& input) {
@@ -123,7 +123,13 @@ std::vector<uint64_t> StringToBytes(const std::string& input) {
     std::vector<uint64_t> bytes_;
     std::string hex_str_ {""};
     uint64_t hex_char_ {0};
-    std::string original_string_ = StripHexPrefix(input);
+    
+    std::string original_string_ {""};
+    if(!IsHexString(input)) {
+        original_string_ = StringToHex(input, false);
+    } else {
+        original_string_ = StripHexPrefix(input);
+    }
 
     for(std::string::size_type i = 0; i < original_string_.length(); i = i + 2) {
         hex_str_ = original_string_.substr(i, 2);
