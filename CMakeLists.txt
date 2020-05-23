@@ -7,6 +7,7 @@ enable_testing()
 
 add_library(pmt patricia-merkle-trie.cpp)
 
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
@@ -44,3 +45,5 @@ if(Boost_FOUND)
     add_executable(${PROJECT_NAME} ${SOURCE})
     target_link_libraries(${PROJECT_NAME} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 endif()
+
+add_subdirectory(src)
