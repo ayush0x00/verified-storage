@@ -1,10 +1,7 @@
 #ifndef PMT_NODE_H
 #define PMT_NODE_H
 
-#include <vector>
-
 #include "alias.hpp"
-#include "nodetype.hpp"
 
 class Node {
     protected:

@@ -3,6 +3,6 @@
 
 #define EMPTY_STRING 0x00
 
-DEFAULT_DB_FILE = "/tmp/pmt.db"
+#define DEFAULT_DB_FILE "/tmp/pmt.db"
 
 #endif
