@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <algorithm>
 
-#include "inc/constants.inc"
+#include "inc/constants.hpp"
 
 std::string BytesToString(std::vector<uint64_t> input) {
     std::string byte_str_ {""};

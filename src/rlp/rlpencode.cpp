@@ -1,6 +1,6 @@
 #include "inc/rlpencode.hpp"
 
-#include "inc/constants.inc"
+#include "inc/constants.hpp"
 #include "inc/utils.hpp"
 #include "inc/rlpstring.hpp"
 

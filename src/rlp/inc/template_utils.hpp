@@ -1,7 +1,7 @@
 #ifndef RLP_TEMPLATE_UTILS_H
 #define RLP_TEMPLATE_UTILS_H
 
-#include "constants.inc"
+#include "constants.hpp"
 
 
 template<typename T>
