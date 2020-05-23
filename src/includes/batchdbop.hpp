@@ -2,6 +2,7 @@
 #define PMT_BATCH_DB_OP_H
 
 #include <vector>
+#include <string>
 
 #include "alias.hpp"
 
