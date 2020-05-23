@@ -1,9 +1,11 @@
-#include "inc/db.hpp"
+#include "includes/db.hpp"
 
 #include <leveldb/write_batch.h>
 #include <string>
 
+#include "includes/alias.hpp"
 #include "utils/hex.hpp"
+
 
 DBConnection::DBConnection(const std::string &db_file) {
     db_file_ = db_file;
@@ -22,20 +24,20 @@ leveldb::Status DBConnection::GetStatus() {
     return status_;
 }
 
-std::vector<uint64_t> DBConnection::Get(const std::vector<uint64_t> &key) {
+buffer_t DBConnection::Get(const buffer_t &key) {
     std::string value_ {""};
-    std::vector<uint64_t> result;
+    buffer_t result;
     const std::string key_ = BytesToString(key);
 
     auto iterator_ = uncommitted_.find(key_);
 
     if(iterator_ != uncommitted_.end()) {
-        result = StringToBytes(StringToHex(iterator_->second));
+        result = StringToBytes(iterator_->second);
     } else {
         status_ = db_->Get(leveldb::ReadOptions(), key_, &value_);
 
         if(status_.ok()) {
-            result = StringToBytes(StringToHex(value_));
+            result = StringToBytes(value_);
         } else {
             // Todo use try catch to throw error
         }
@@ -44,14 +46,14 @@ std::vector<uint64_t> DBConnection::Get(const std::vector<uint64_t> &key) {
     return result;
 }
 
-void DBConnection::Put(const std::vector<uint64_t> &key, const std::vector<uint64_t> &value) {
+void DBConnection::Put(const buffer_t &key, const buffer_t &value) {
     const std::string key_ = BytesToString(key);
     std::string value_ = BytesToString(value);
 
     uncommitted_.insert(std::make_pair(key_, value_));
 }
 
-void DBConnection::Delete(const std::vector<uint64_t> &key) {
+void DBConnection::Delete(const buffer_t &key) {
     const std::string key_ = BytesToString(key);
 
     auto iterator_ = uncommitted_.find(key_);
@@ -76,21 +78,21 @@ void DBConnection::Commit() {
     uncommitted_.clear();
 }
 
-std::map<std::vector<uint64_t>, std::vector<uint64_t>> DBConnection::ReadAll() {
-    std::map<std::vector<uint64_t>, std::vector<uint64_t>> key_values_;
+std::map<buffer_t, buffer_t> DBConnection::ReadAll() {
+    std::map<buffer_t, buffer_t> key_values_;
 
     leveldb::Iterator *it = db_->NewIterator(leveldb::ReadOptions());
     for (it->SeekToFirst(); it->Valid(); it->Next()) {
         auto key_ = it->key().ToString();
         auto value_ = it->value().ToString();
-        key_values_.insert(std::make_pair(StringToBytes(StringToHex(key_)), StringToBytes(StringToHex(value_))));
+        key_values_.insert(std::make_pair(StringToBytes(key_), StringToBytes(value_)));
     }
     delete it;
 
     return key_values_;
 }
 
-void DBConnection::BatchProcess(const std::vector<BatchDBOp> &ops) {
+void DBConnection::BatchProcess(const batchdboparray_t &ops) {
     for(BatchDBOp element : ops) {
         if(element.GetType() == "put") {
             if(element.GetValue().empty()) {

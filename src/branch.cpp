@@ -1,8 +1,9 @@
-#include "inc/branch.hpp"
+#include "includes/branch.hpp"
 
 #include <map>
 
 #include "utils/hex.hpp"
+#include "includes/nodetype.hpp"
 
 Branch::Branch() {
     branches_.reserve(16);
