@@ -1,14 +1,15 @@
 #include "vtrie.hpp"
 
+#include "includes/nodetype.hpp"
+#include "includes/constants.hpp"
+#include "includes/batchdbop.hpp"
+#include "includes/nodeutils.hpp"
+#include "includes/leaf.hpp"
+#include "includes/branch.hpp"
+#include "includes/extension.hpp"
 #include "utils/hex.hpp"
 #include "utils/nibbles.hpp"
-#include "inc/constants.inc"
-#include "inc/batchdbop.hpp"
 #include "keccak/keccak_buffer.hpp"
-#include "inc/nodeutils.hpp"
-#include "inc/leaf.hpp"
-#include "inc/branch.hpp"
-#include "inc/extension.hpp"
 
 VTrie::VTrie() {
     is_defined_ = false;
