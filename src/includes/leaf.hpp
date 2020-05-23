@@ -20,7 +20,7 @@ class Leaf : public Node {
         void SetKey(nibble_t input);
         nibble_t EncodedKey();
 
-        bufferarray_t Leaf::Raw();
+        bufferarray_t Raw();
 };
 
 #endif

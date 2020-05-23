@@ -19,7 +19,7 @@ class Branch : public Node {
         bufferarray_t GetBranches();
         std::map<int, buffer_t> GetChildren();
 
-        bufferarray_t Branch::Raw();
+        bufferarray_t Raw();
 };
 
 #endif
