@@ -1,4 +1,4 @@
-#include "inc/path.hpp"
+#include "includes/path.hpp"
 
 Path::Path(const Node &node, const nibble_t &remaining, const std::stack<Node> &stack) {
     node_ = node;

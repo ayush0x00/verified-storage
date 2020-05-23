@@ -3,7 +3,7 @@
 
 #include "keccak.h"
 
-#include "inc/alias.hpp"
+#include "includes/alias.hpp"
 
 class KeccakBuffer {
     private:
@@ -11,7 +11,7 @@ class KeccakBuffer {
 
     public:
         KeccakBuffer();
-        KeccakBuffer(const Keccak::Bits bits=Keccak::Bits::Keccak256);
+        KeccakBuffer(const Keccak::Bits bits);
 
         buffer_t operator()(const buffer_t& input);
 };
