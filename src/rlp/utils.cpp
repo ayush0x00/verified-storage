@@ -37,7 +37,14 @@ std::vector<uint64_t> StringToBytes(const std::string& input) {
     std::vector<uint64_t> bytes_;
     std::string hex_str_ {""};
     uint64_t hex_char_ {0};
-    std::string original_string_ = StripHexPrefix(input);
+
+    std::string original_string_ = "";
+    if(IsHexString(input)) {
+        original_string_ = StripHexPrefix(input);
+    } else {
+        original_string_ = StripHexPrefix(StringToHex(input));
+    }
+    
 
     for(std::string::size_type i = 0; i < original_string_.length(); i = i + 2) {
         hex_str_ = original_string_.substr(i, 2);
