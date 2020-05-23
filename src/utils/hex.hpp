@@ -1,7 +1,8 @@
 #ifndef PMT_UTILS_HEX_H
 #define PMT_UTILS_HEX_H
 
-#include <iostream>
+#include <string>
+#include <stdint.h>
 #include <vector>
 
 /**
