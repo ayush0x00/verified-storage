@@ -1,6 +1,6 @@
 # Markle Patricia Trie
 
-This is an implementation of Modified Markle Patricia Trie as mentioned in Etherium Paper. 
+This is an implementation of Modified Markle Patricia Trie as mentioned in Etherium Paper.
 
 ## Language Used for implementation
 
@@ -20,7 +20,7 @@ C++
 - [ ] Create Toolchain compatible for Win32/64
 - [ ] Create Toolchain compatible for LLVM
 - [ ] Add Build Instructions in the Readme
-- [ ] Add Makefile
+- [ ] ~~Add Makefile~~
 - [ ] Create Code Documentation
 - [ ] Create Library Documentation
 - [ ] Perform Static Code Analysis
