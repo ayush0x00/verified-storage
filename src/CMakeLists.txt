@@ -1,6 +1,4 @@
 add_library(
-    hex.cpp
-    nibbles.cpp
     nodeutils.cpp
     db.cpp
     batchdbop.cpp

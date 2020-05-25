@@ -1,12 +1,12 @@
 #include <iostream>
 #include <boost/array.hpp>
 
-#include "src/utils/nibbles.hpp"
-#include "src/utils/hex.hpp"
-#include "src/includes/alias.hpp"
-#include "src/includes/batchdbop.hpp"
-#include "src/includes/db.hpp"
-#include "src/includes/vtrie.hpp"
+#include "utils/nibbles.hpp"
+#include "utils/hex.hpp"
+#include "includes/alias.hpp"
+#include "includes/batchdbop.hpp"
+#include "includes/db.hpp"
+#include "includes/vtrie.hpp"
 
 void say_hello(){
     std::cout << "Hello, from patricia-merkle-trie!\n";
@@ -18,6 +18,7 @@ int main() {
     boost::array<int, 4> arr = {{1,2,3,4}};
     std::cout << "hi" << arr[0] << std::endl;
 
+    std::string
     DBConnection db_connection = DBConnection("/tmp/testdb");
     std::string value {"Test"};
     if (db_connection.GetStatus().ok()) {
