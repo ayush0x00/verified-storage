@@ -1,6 +1,6 @@
-#include "includes/node.hpp"
+#include "node.hpp"
 
-#include "includes/nodetype.hpp"
+#include "nodetype.hpp"
 #include "utils/hex.hpp"
 #include "rlp/inc/rlpencode.hpp"
 #include "keccak/keccak_buffer.hpp"

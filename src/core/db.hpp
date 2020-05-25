@@ -15,7 +15,7 @@ class DBConnection {
         std::map<std::string, std::string> uncommitted_;
 
     public:
-        DBConnection();
+        // DBConnection();
         DBConnection(const std::string &db_file);
         leveldb::Status GetStatus();
         buffer_t Get(const buffer_t &key);

@@ -1,6 +1,6 @@
-#include "includes/leaf.hpp"
+#include "leaf.hpp"
 
-#include "includes/nodetype.hpp"
+#include "nodetype.hpp"
 #include "utils/nibbles.hpp"
 
 Leaf::Leaf(nibble_t nibbles, buffer_t value) {

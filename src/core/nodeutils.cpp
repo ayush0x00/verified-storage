@@ -1,9 +1,9 @@
-#include "includes/nodeutils.hpp"
+#include "nodeutils.hpp"
 
+#include "branch.hpp"
+#include "extension.hpp"
+#include "leaf.hpp"
 #include "rlp/inc/rlpdecode.hpp"
-#include "includes/branch.hpp"
-#include "includes/extension.hpp"
-#include "includes/leaf.hpp"
 #include "utils/nibbles.hpp"
 #include "utils/hex.hpp"
 

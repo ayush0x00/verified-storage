@@ -1,6 +1,6 @@
-#include "includes/extension.hpp"
+#include "extension.hpp"
 
-#include "includes/nodetype.hpp"
+#include "nodetype.hpp"
 #include "utils/nibbles.hpp"
 
 Extension::Extension(nibble_t nibble, buffer_t value) {

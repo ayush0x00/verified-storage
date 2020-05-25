@@ -1,9 +1,9 @@
-#include "includes/db.hpp"
+#include "db.hpp"
 
 #include <leveldb/write_batch.h>
 #include <string>
 
-#include "includes/alias.hpp"
+#include "alias.hpp"
 #include "utils/hex.hpp"
 
 

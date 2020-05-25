@@ -3,7 +3,7 @@
 
 #include "keccak.h"
 
-#include "../includes/alias.hpp"
+#include "../core/alias.hpp"
 
 class KeccakBuffer {
     private:
