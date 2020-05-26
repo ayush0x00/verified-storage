@@ -4,7 +4,7 @@
 #include <string>
 
 #include "alias.hpp"
-#include "utils/hex.hpp"
+#include "hex.hpp"
 
 
 DBConnection::DBConnection(const std::string &db_file) {

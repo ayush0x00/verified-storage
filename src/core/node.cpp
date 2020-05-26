@@ -1,7 +1,7 @@
 #include "node.hpp"
 
 #include "nodetype.hpp"
-#include "utils/hex.hpp"
+#include "hex.hpp"
 #include "rlp/inc/rlpencode.hpp"
 #include "keccak/keccak_buffer.hpp"
 

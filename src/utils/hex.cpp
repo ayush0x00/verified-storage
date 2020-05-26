@@ -1,9 +1,9 @@
-#include "utils/hex.hpp"
+#include "hex.hpp"
 
 #include <sstream>
 #include <iomanip>
 
-#include "includes/constants.hpp"
+#include "constants.hpp"
 
 
 std::vector<uint64_t> EmptyByte() {

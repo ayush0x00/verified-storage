@@ -1,7 +1,7 @@
-#include "utils/nibbles.hpp"
+#include "nibbles.hpp"
 
-#include "includes/alias.hpp"
-#include "utils/hex.hpp"                                                                                                                                       
+#include "alias.hpp"
+#include "hex.hpp"                                                                                                                                       
 
 nibble_t StringToNibble(const std::string& input) {
     buffer_t buffer_ = StringToBytes(StringToHex(input));
