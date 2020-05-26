@@ -1,32 +1,44 @@
 cmake_minimum_required(VERSION 3.8.0)
+include(CMakePackageConfigHelpers)
+include(CMakeDependentOption)
+
 set (CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-project(patricia-merkle-trie)
+project(varifiedstorage)
+set(varifiedstorage_VERSION_MAJOR 0)
+set(varifiedstorage_VERSION_MINOR 1)
+set(varifiedstorage_VERSION_PATCH 0)
+set(varifiedstorage_VERSION ${varifiedstorage_VERSION_MAJOR}.${varifiedstorage_VERSION_MINOR},${varifiedstorage_VERSION_PATCH})
+set(PACKAGE_VERSION ${varifiedstorage_VERSION})
+set(VERSION "${varifiedstorage_VERSION}")
 
-set(patricia-merkle-trie_VERSION_MAJOR 0)
-set(patricia-merkle-trie_VERSION_MINOR 1)
-set(patricia-merkle-trie_VERSION_PATCH 0)
-
-include(CTest)
-enable_testing()
-
-add_library(pmt src/patricia-merkle-trie.cpp)
-
-set(SOURCE src/patricia-merkle-trie.cpp)
+# set(SOURCE src/patricia-merkle-trie.cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
+include(CTest)
+enable_testing()
+
+#Options
+option(VERIFIEDSTORAGE_STATIC "Build static library" ON)
+option(VERIFIEDSTORAGE_SHARED "Build shared libraru" ON)
+option(VERIFIEDSTORAGE_LOG "Build with logs" ON)
 # Use the boost::spirit parser for converting strings to numbers
 option(USE_BOOST_SPIRIT_PARSER 
     "use the boost::spirit::qi parsers for converting strings to tuple attributes" 
     ON
 )
-
 # Use LevelDB key-value store for implementing tables
 option(USE_LEVELDB_TABLE "use LevelDB for implementing persistent tables" ON)
+
+find_package(Doxygen)
+option(VERIFIEDSTORAGE_DOCUMENTATION "Create and install the HTML based API documentation (requires doxygen)" ${DOXYGEN_FOUND})
+
+#Dependecies
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 ########################
 # LevelDB database library 
@@ -79,8 +91,8 @@ if(Boost_FOUND)
     if(USE_BOOST_SPIRIT_PARSER)
         add_definitions( "-DUSE_BOOST_SPIRIT_PARSER" )
     endif()
-    add_executable(${PROJECT_NAME} ${SOURCE})
-    target_link_libraries(${PROJECT_NAME} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+    # add_executable(${PROJECT_NAME} ${SOURCE})
+    # target_link_libraries(${PROJECT_NAME} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 endif()
 
 set(BOOST_LIBRARIES
@@ -97,16 +109,72 @@ set(BOOST_LIBRARIES
 	${DYLIB_LIBRARY}
 )
 
+#Build Flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -Wno-return-type -Wall -Wextra -Wnon-virtual-dtor -pedantic-errors -fvisibility=hidden")
 
-set(UTILS_INCLUDE_DIR "${SOURCE_DIR}/utils")
-# set_target_properties(pmt patricia-merkle-trie PROPERTIES LINKER_LANGUAGE CXX)
+link_directories(
+    ./
+    utils/
+    keccak/
+    rlp/
+    rlp/inc/
+    ${CMAK_CURRENT_BINARY_DIR}/include/
+)
 
-message(STATUS "${PROJECT_SOURCE_DIR}")
+#  Install dirs
+include (GNUInstallDirs)
+set (prefix ${CMAKE_INSTALL_PREFIX})
+set (exec_prefix "\${prefix}")
+set (libdir "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
+set (includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+set (bindir "${CMAKE_INSTALL_FULL_BINDIR}")
+set (sysconfdir "${CMAKE_INSTALL_FULL_SYSCONFDIR}")
+set (top_srcdir "${CMAKE_CURRENT_SOURCE_DIR}")
 
-# add_subdirectory(src)
-include_directories("${PROJECT_SOURCE_DIR}")
-include_directories("${PROJECT_SOURCE_DIR}/utils")
-include_directories("${PROJECT_SOURCE_DIR}/keccak")
-include_directories("${PROJECT_SOURCE_DIR}/rlp")
-include_directories("${PROJECT_SOURCE_DIR}/includes")
+#sources
+list(APPEND varifiedstorage_HEADERS
+    src/core/alias.hpp
+    src/core/constants.hpp
+    src/core/nodetype.hpp
+    src/utils/generalised.hpp
+    src/utils/hex.hpp
+    src/utils/nibbles.hpp
+    src/core/batchdbop.hpp
+    src/core/db.hpp
+    src/core/node.hpp
+    src/core/branch.hpp
+    src/core/extension.hpp
+    src/core/leaf.hpp
+    src/core/db.hpp
+    src/core/nodeutils.hpp
+    src/core/path.hpp
+    src/core/vtrie.hpp    
+)
 
+list(APPEND varifiedstorage_SOURCES
+    src/utils/hex.cpp
+    src/utils/nibbles.cpp
+    src/core/batchdbop.cpp
+    src/core/db.cpp
+    src/core/node.cpp
+    src/core/branch.cpp
+    src/core/extension.cpp
+    src/core/leaf.cpp
+    src/core/db.cpp
+    src/core/nodeutils.cpp
+    src/core/path.cpp
+    src/core/vtrie.cpp
+)
+
+# Targets
+if(VERIFIEDSTORAGE_STATIC)
+    add_library(varifiedstorage-static STATIC 
+        ${varifiedstorage_SOURCES}
+        ${varifiedstorage_HEADERS}
+    )
+    set_target_properties(varifiedstorage-static PROPERTIES OUTPUT_NAME "verifiedstorage")
+    target_include_directories(varifiedstorage-static SYSTEM PRIVATE utils)
+    target_include_directories(varifiedstorage-static SYSTEM PRIVATE keccak)
+    target_include_directories(varifiedstorage-static SYSTEM PRIVATE rlp)
+    install(TARGETS varifiedstorage-static DESTINATION ${CMAKE_INSTALL_LIBDIR} EXPORT varifiedstorage)
+endif()
