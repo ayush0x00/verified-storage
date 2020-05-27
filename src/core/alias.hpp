@@ -10,6 +10,6 @@ using nibble_t = std::vector<uint_t>;
 
 using buffer_t = std::vector<uint64_t>;
 
-using bufferarray_t = std::vector<std::vector<uint64_t>>;
+using bufferarray_t = std::vector<buffer_t>;
 
 #endif
