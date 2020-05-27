@@ -27,6 +27,6 @@ class BatchDBOp {
 
 };
 
-using batchdboparray_t = std::vector<BatchDBOp>;
+// using batchdboparray_t = std::vector<BatchDBOp>;
 
 #endif
