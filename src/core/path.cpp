@@ -1,16 +1,16 @@
 #include "path.hpp"
 
-Path::Path(const Node &node, const nibble_t &remaining, const std::stack<Node> &stack) {
+Path::Path(const node_t &node, const nibble_t &remaining, const std::vector<node_t> &stack) {
     node_ = node;
     remaining_ = remaining;
     stack_ = stack;
 }
 
-Node Path::GetNode() {
+node_t Path::GetNode() {
     return node_;
 }
 
-void Path::SetNode(const Node &node) {
+void Path::SetNode(const node_t &node) {
     node_ = node;
 }
 
@@ -22,10 +22,10 @@ void Path::SetRemaining(const nibble_t &remaining) {
     remaining_ = remaining_;
 }
 
-std::stack<Node> Path::GetStack() {
+std::vector<node_t> Path::GetStack() {
     return stack_;
 }
 
-void Path::SetStack(const std::stack<Node> &stack) {
+void Path::SetStack(const std::vector<node_t> &stack) {
     stack_ = stack;
 }

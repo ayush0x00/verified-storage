@@ -1,26 +1,26 @@
 #ifndef PMT_PATH_H
 #define PMT_PATH_H
 
-#include <stack>
-// #include <string>
+#include <vector>
 
-#include "node.hpp"
+#include "aliasadvance.hpp"
+
 
 class Path {
     private:
-        Node node_;
+        node_t node_;
         nibble_t remaining_;
-        std::stack<Node> stack_;
+        std::vector<node_t> stack_;
 
     public:
-        Path(const Node &node, const nibble_t &remaining, const std::stack<Node> &stack);
+        Path(const node_t &node, const nibble_t &remaining, const std::vector<node_t> &stack);
 
-        Node GetNode();
-        void SetNode(const Node &node);
+        node_t GetNode();
+        void SetNode(const node_t &node);
         nibble_t GetRemaining();
         void SetRemaining(const nibble_t &remaining);
-        std::stack<Node> GetStack();
-        void SetStack(const std::stack<Node> &stack);
+        std::vector<node_t> GetStack();
+        void SetStack(const std::vector<node_t> &stack);
 };
 
 #endif
