@@ -35,7 +35,7 @@ std::vector<uint64_t> NibbleToBuffer(const std::vector<uint>& input);
  * @param input_2 Second nibble
  * @return int Number of matching nibbles
  */
-int MatchingNibbleLength(std::vector<uint>& input_1, std::vector<uint>& input_2);
+int MatchingNibbleLength(const std::vector<uint>& input_1, const std::vector<uint>& input_2);
 
 /**
  * @brief Compare two nibble keys

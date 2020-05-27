@@ -34,7 +34,7 @@ buffer_t NibbleToBuffer(const nibble_t& input) {
     return buffer_;
 }
 
-int MatchingNibbleLength(nibble_t& input_1, nibble_t& input_2) {
+int MatchingNibbleLength(const nibble_t& input_1, const nibble_t& input_2) {
     std::string::size_type i = 0;
     while((input_1.at(i) == input_2.at(i)) && input_1.size() > i) {
         i++;
