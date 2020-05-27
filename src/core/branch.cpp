@@ -16,15 +16,15 @@ Node Branch::FromBuffer(const bufferarray_t &input) {
         buffer_arr_.resize(17);
     }
     
-    Branch node = Branch();
+    Branch node_ = Branch();
     // Todo Create template for slicing stl array slice it instead of looping
     for(std::string::size_type i = 0; i < buffer_arr_.size() - 1; i++) {
-        node.SetBranch(i, buffer_arr_.at(i));
+        node_.SetBranch(i, buffer_arr_.at(i));
     }
 
-    node.SetValue(input.at(buffer_arr_.size() - 1));
+    node_.SetValue(input.at(buffer_arr_.size() - 1));
 
-    return node;
+    return node_;
 }
 
 void Branch::SetBranch(const int loc, const buffer_t &input) {

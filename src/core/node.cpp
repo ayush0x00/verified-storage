@@ -1,13 +1,18 @@
 #include "node.hpp"
 
 #include "nodetype.hpp"
-#include "hex.hpp"
-#include "rlp/inc/rlpencode.hpp"
-#include "keccak/keccak_buffer.hpp"
+#include "../utils/hex.hpp"
+#include "../rlp/inc/rlpencode.hpp"
+#include "../keccak/keccak_buffer.hpp"
 
 
 Node::Node() {
     node_type_ = BLANK_NODE;
+}
+
+Node::Node(const Node &node) {
+    value_ = node.value_;
+    node_type_ = node.node_type_;
 }
 
 char Node::GetNodeType() {

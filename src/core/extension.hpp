@@ -1,8 +1,6 @@
 #ifndef PMT_EXTENSION_NODE_H
 #define PMT_EXTENSION_NODE_H
 
-#include <array>
-
 #include "node.hpp"
 
 class Extension : public Node {

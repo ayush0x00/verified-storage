@@ -10,6 +10,7 @@ class Node {
 
     public:
         Node();
+        Node(const Node &node);
         char GetNodeType();
         void SetNodeType(char  input);
         buffer_t GetValue();

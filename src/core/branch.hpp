@@ -10,7 +10,7 @@ class Branch : public Node {
         bufferarray_t branches_;
 
     public:
-        // Branch();
+        Branch();
         // ~Branch();
 
         static Node FromBuffer(const bufferarray_t &input);
