@@ -6,6 +6,6 @@ enum NodeType {
     BRANCH_NODE = 1,
     EXTENSION_NODE = 2,
     LEAF_NODE = 3
-}
+};
 
 #endif
