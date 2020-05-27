@@ -4,8 +4,11 @@
 #include "alias.hpp"
 #include "node.hpp"
 
+
 static Node DecodeNode(const buffer_t &input);
+
 static Node DecodeRawNode(const bufferarray_t &input);
+
 static bool IsRawNode(const bufferarray_t &input);
 
 #endif
