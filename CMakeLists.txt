@@ -134,6 +134,7 @@ set (top_srcdir "${CMAKE_CURRENT_SOURCE_DIR}")
 #sources
 list(APPEND varifiedstorage_HEADERS
     src/core/alias.hpp
+    src/core/aliasadvance.hpp
     src/core/constants.hpp
     src/core/nodetype.hpp
     src/utils/generalised.hpp
