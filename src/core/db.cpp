@@ -4,8 +4,19 @@
 #include <string>
 
 #include "alias.hpp"
+#include "aliasadvance.hpp"
+#include "constants.hpp"
 #include "hex.hpp"
+#include "batchdbop.hpp"
 
+DBConnection::DBConnection() {
+    db_file_ = DEFAULT_DB_FILE;
+
+    leveldb::Options options;
+    options.create_if_missing = true;
+    
+    status_ = leveldb::DB::Open(options, db_file_, &db_);
+}
 
 DBConnection::DBConnection(const std::string &db_file) {
     db_file_ = db_file;
