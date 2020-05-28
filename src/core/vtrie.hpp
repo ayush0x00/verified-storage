@@ -14,22 +14,22 @@
 
 class VTrie {
     private:
-        bool is_defined_;
-        buffer_t EMPTY_TRIE_ROOT_;
-        buffer_t root_;
-        DBConnection db_;
+        bool _is_defined;
+        buffer_t _EMPTY_TRIE_ROOT;
+        buffer_t _root;
+        DBConnection _db;
         // Todo Add Semaphore for locking the resource under processing
 
         node_t LookupNode(const bufferarray_t &node);
         void PutNode(node_t &node);
         void FindValueNodes(); // Todo need to check what should be passed as parameter
         void FindDbNodes(); // Todo need to check what should be passed as parameter
-        void UpdateNode(const buffer_t &key, const buffer_t &value, const nibble_t &key_reminder, std::vector<node_t> &stack);
+        void UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key_reminder, std::vector<node_t> &stack);
         void WalkTrie(const buffer_t &root); // Todo need to check what should be passed as parameter
-        void SaveStack(const nibble_t &key, const std::vector<node_t> &stack, const batchdboparray_t &op_stack);
+        void SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_t &op_stack);
         void DeleteNode(const buffer_t &key, const std::vector<node_t> &stack);
         void CreateInitilNode(const buffer_t &key, const buffer_t &value);
-        bufferarray_t FormatNode(const node_t &node, const bool top_level, const batchdboparray_t &op_stack, const bool remove=false);
+        bufferarray_t FormatNode(node_t &node, const bool top_level, batchdboparray_t &op_stack, const bool remove=false);
 
     public:
         VTrie();
@@ -41,6 +41,8 @@ class VTrie {
         void SetRoot(const buffer_t &root);
         bool IsDefined();
         void IsDefined(const bool is_defined);
+        DBConnection GetDB();
+        void SetDB(const DBConnection &db);
 
         static VTrie FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie);
         bufferarray_t Prove(VTrie &trie, const buffer_t &key);
