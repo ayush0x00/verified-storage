@@ -12,36 +12,36 @@
 #include "../keccak/keccak_buffer.hpp"
 
 VTrie::VTrie() {
-    is_defined_ = false;
-    EMPTY_TRIE_ROOT_ = EmptyByte();
-    root_ = EMPTY_TRIE_ROOT_;
-    db_ = DBConnection(DEFAULT_DB_FILE);
+    _is_defined = false;
+    _EMPTY_TRIE_ROOT = EmptyByte();
+    _root = _EMPTY_TRIE_ROOT;
+    _db = DBConnection(DEFAULT_DB_FILE);
 }
 
 VTrie::VTrie(const buffer_t &root) {
-    EMPTY_TRIE_ROOT_ = EmptyByte();
-    root_ = EMPTY_TRIE_ROOT_;
-    db_ = DBConnection(DEFAULT_DB_FILE);
+    _EMPTY_TRIE_ROOT = EmptyByte();
+    _root = _EMPTY_TRIE_ROOT;
+    _db = DBConnection(DEFAULT_DB_FILE);
     if(root.size()) {
         SetRoot(root);
     }
 
-    is_defined_ = true;
+    _is_defined = true;
 }
 
 VTrie::VTrie(DBConnection &db, const buffer_t &root) {
-    EMPTY_TRIE_ROOT_ = EmptyByte();
-    db_ = !db ? db : DBConnection(DEFAULT_DB_FILE);
-    root_ = EMPTY_TRIE_ROOT_;
+    _EMPTY_TRIE_ROOT = EmptyByte();
+    _db = !db ? db : DBConnection(DEFAULT_DB_FILE);
+    _root = _EMPTY_TRIE_ROOT;
     if(root.size()) {
         SetRoot(root);
     }
 
-    is_defined_ = true;
+    _is_defined = true;
 }
 
 buffer_t VTrie::GetRoot() {
-    return root_;
+    return _root;
 }
 
 void VTrie::Root(const buffer_t &root) {
@@ -49,19 +49,27 @@ void VTrie::Root(const buffer_t &root) {
 }
 
 void VTrie::SetRoot(const buffer_t &root) {
-    root_ = root.size() ? root : EMPTY_TRIE_ROOT_;
+    _root = root.size() ? root : _EMPTY_TRIE_ROOT;
 }
 
 bool VTrie::IsDefined() {
-    return is_defined_;
+    return _is_defined;
 }
 
 void VTrie::IsDefined(const bool is_defined) {
-    is_defined_ = is_defined;
+    _is_defined = is_defined;
+}
+
+DBConnection VTrie::GetDB() {
+    return _db;
+}
+
+void VTrie::SetDB(const DBConnection &db) {
+    _db = db;
 }
 
 // bool VTrie::operator!() {
-//     return root_ == EMPTY_TRIE_ROOT_;
+//     return root_ == _EMPTY_TRIE_ROOT;
 // }
 
 void VTrie::PutNode(node_t &node) {
@@ -86,12 +94,12 @@ void VTrie::PutNode(node_t &node) {
             break;
     }
 
-    db_.Put(hash_, serialized_);
+    _db.Put(hash_, serialized_);
 }
 
 void VTrie::CreateInitilNode(const buffer_t &key, const buffer_t &value) {
     Leaf new_node_ = Leaf(BufferToNibble(key), value);
-    root_ = new_node_.Hash();
+    _root = new_node_.Hash();
     // Create a variant object
     node_t node_ = new_node_;
     PutNode(node_);
@@ -146,7 +154,7 @@ bool VTrie::Put(const buffer_t &key, const buffer_t &value) {
 
     // Todo Look for the lock and add lock before starting this process
     // Todo check for Keccak-256 hash of the RLP of null
-    if(root_ == EmptyByte()) {
+    if(_root == EmptyByte()) {
         // No root, initialize this trie
         CreateInitilNode(key, value);
         status_ = true;
@@ -169,7 +177,7 @@ Path VTrie::FindPath(const buffer_t &key) {
     nibble_t key_reminder_ = Slice(target_key_, MatchingNibbleLength());
 }
 
-void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, const nibble_t &key_reminder, std::vector<node_t> &stack) {
+void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key_reminder, std::vector<node_t> &stack) {
     batchdboparray_t to_save_;
     
     node_t last_node_ = stack.back();
@@ -214,8 +222,8 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, const nibble_
     } else if(last_node_.which() == BRANCH_NODE) {
         stack.push_back(last_node_);
         if(key_reminder.size()) {
-            // Todo Add extension to the branch node
-            key_reminder.shift();
+            // Add extension to the branch node
+            key_reminder.erase(key_reminder.begin());
             const Leaf new_leaf_ = Leaf(key_reminder, value);
             stack.push_back(new_leaf_);
         } else {
@@ -233,17 +241,42 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, const nibble_
             nibble_t new_node_key_(existing_key_.begin(), existing_key_.begin() + matching_length_);
             Extension new_ext_node_ = Extension(new_node_key_, value);
             stack.push_back(new_ext_node_);
-            last_key_.Splice(0, matching_length_);
-            key_reminder.Splice(0, matching_length_);
+
+            last_key_.erase(last_key_.begin(), last_key_.begin() + matching_length_);
+            key_reminder.erase(key_reminder.begin(), key_reminder.begin() + matching_length_);
         }
 
         stack.push_back(new_branch_);
 
         if(last_key_.size()) {
+            const uint_t branch_key_ = last_key_.at(0);
+            last_key_.erase(last_key_.begin());
             
+            if(last_key_.size() || last_node_.which() == LEAF_NODE) {
+                // Shrink extension of leaf
+                boost::get<Leaf>(last_node_).SetKey(last_key_);
+                const bufferarray_t farmatted_node_ = FormatNode(last_node_, false, to_save_);
+                new_branch_.SetBranch(branch_key_, farmatted_node_);
+            } else {
+                // remove extension of attaching
+                FormatNode(last_node_, false, to_save_, true);
+                new_branch_.SetBranch(branch_key_, boost::get<Extension>(last_node_).GetValue());
+            }
+        } else {
+            new_branch_.SetValue(boost::get<Branch>(last_node_).GetValue());
+        }
+
+        if(key_reminder.size()) {
+            key_reminder.erase(key_reminder.begin());
+            // Add leaf node to the branch node
+            const Leaf new_leaf_node_ = Leaf(key_reminder, value);
+            stack.push_back(new_leaf_node_);
+        } else {
+            new_branch_.SetValue(value);
         }
     }
     
+    SaveStack(key_nibbles_, stack, to_save_);
 }
 
 VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie) {
@@ -263,7 +296,7 @@ VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie) {
         }
     }
 
-    proof_trie.db_.BatchProcess(op_stack_);
+    proof_trie._db.BatchProcess(op_stack_);
 
     return proof_trie;
 }
@@ -310,13 +343,27 @@ node_t VTrie::LookupNode(const bufferarray_t &node) {
         return DecodeRawNode(node);
     }
 
-    buffer_t value_ = db_.Get(node.at(0));
+    buffer_t value_ = _db.Get(node.at(0));
     Node found_node_;
     if(value_.size()) {
         found_node_ = DecodeNode(value_);
     }
 
     return found_node_;
+}
+
+bufferarray_t VTrie::FormatNode(node_t &node, const bool top_level, batchdboparray_t &op_stack, const bool remove) {
+    const buffer_t rlp_node_ = boost::get<Node>(node).Serialize();
+    
+    if(rlp_node_.size() >= 32 || top_level) {
+        const buffer_t hash_root_ = boost::get<Node>(node).Hash();
+        BatchDBOp  batch_db__op_ = BatchDBOp("put", hash_root_, rlp_node_);
+        op_stack.push_back(batch_db__op_);
+
+        return hash_root_;
+    }
+
+    return boost::get<Node>(node).Raw();
 }
 
 void VTrie::FindValueNodes() {
@@ -331,28 +378,54 @@ void VTrie::WalkTrie(const buffer_t &root) {
 
 }
 
-void VTrie::SaveStack(const nibble_t &key, const std::vector<node_t> &stack, const batchdboparray_t &op_stack) {
+void VTrie::SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_t &op_stack) {
+    buffer_t last_root_;
+    while(stack.size()) {
+        auto node_ = stack.back();
+        stack.pop_back();
+        if(node_.which() == LEAF_NODE) {
+            key.erase(key.begin() + (key.size() - boost::get<Leaf>(node_).GetKey().size()));
+        } else if(node_.which() == EXTENSION_NODE) {
+            key.erase(key.begin() + (key.size() - boost::get<Extension>(node_).GetKey().size()));
+            if(last_root_.size()) {
+                boost::get<Extension>(node_).SetValue(last_root_);
+            }
+        } else if(node_.which() == BRANCH_NODE) {
+            if(last_root_.size()) {
+                const auto branch_key_ = key.back();
+                key.pop_back();
+                boost::get<Branch>(node_).SetBranch(branch_key_, last_root_);
+            }
+        }
 
+        // Recheck this
+        last_root_ = FormatNode(node_, stack.empty(), op_stack).at(0);
+    }
+
+    if(last_root_.size()) {
+        SetRoot(last_root_);
+    }
+
+    Batch(op_stack);
 }
 
 void VTrie::DeleteNode(const buffer_t &key, const std::vector<node_t> &stack) {
 
 }
 
-bufferarray_t VTrie::FormatNode(const node_t &node, const bool top_level, const batchdboparray_t &op_stack, const bool remove) {
-
-}
-
 VTrie VTrie::Copy() {
-
+    DBConnection db_ = GetDB().Copy();
+    buffer_t root_ = GetRoot();
+    return VTrie(db_, root_);
 }
 
 void VTrie::Batch(const batchdboparray_t &op_stack) {
-
+    _db.BatchProcess(op_stack);
 }
 
 bool VTrie::CheckRoot(const buffer_t &root) {
-
+    const auto node_ = LookupNode(root);
+    return !node_.empty();
 }
 
 buffer_t VTrie::Select(const buffer_t &root_hash, const buffer_t &key) {
