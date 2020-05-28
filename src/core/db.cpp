@@ -27,6 +27,13 @@ DBConnection::DBConnection(const std::string &db_file) {
     status_ = leveldb::DB::Open(options, db_file, &db_);
 }
 
+DBConnection::DBConnection(leveldb:: DB* &db, const std::string &db_file, const leveldb::Status &status, const std::map<std::string, std::string> &uncommitted) {
+    db_file_ = db_file;
+    db_ = db;
+    status_ = status;
+    uncommitted_ = uncommitted;
+}
+
 bool DBConnection::operator!() {
     return !db_file_.empty() && status_.ok() && db_;
 }
@@ -120,4 +127,8 @@ void DBConnection::BatchProcess(const batchdboparray_t &ops) {
         Commit();
     }
 
+}
+
+DBConnection DBConnection::Copy() {
+    return DBConnection(db_, db_file_, status_, uncommitted_);
 }
