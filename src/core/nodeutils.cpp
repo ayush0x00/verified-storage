@@ -25,10 +25,10 @@ node_t DecodeRawNode(const bufferarray_t &input) {
     
     nibble_t nibbles_;
     switch (input.size()) {
-        case 17: // It's a branch node
+        case BRANCH_NODE_SIZE: // It's a branch node
             decoded_node_ = Branch::FromBuffer(input);
             break;
-        case 2: // It can be either leaf node or extension node
+        case OTHER_NODE_SIZE: // It can be either leaf node or extension node
             nibbles_ = BufferToNibble(input.at(0));
             
             if(IsTerminator(nibbles_)) {
