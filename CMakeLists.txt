@@ -67,18 +67,18 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
 find_package(Boost ${BOOST_MIN_VERSION} REQUIRED COMPONENTS 
-    program_options
+    # program_options
     system
-    coroutine
-    iostreams
+    # coroutine
+    # iostreams
     log
-    filesystem
-    timer
-    serialization
+    # filesystem
+    # timer
+    # serialization
     thread
     regex
-    chrono
-    date_time
+    # chrono
+    # date_time
 )
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Fatal error: Boost (Version >= ${BOOST_MIN_VERSION}) required.\n")
