@@ -20,7 +20,7 @@ class VTrie {
         DBConnection _db;
         // Todo Add Semaphore for locking the resource under processing
 
-        node_t LookupNode(const bufferarray_t &node);
+        node_t LookupNode(const embedded_t &node);
         void PutNode(node_t &node);
         void FindValueNodes(); // Todo need to check what should be passed as parameter
         void FindDbNodes(); // Todo need to check what should be passed as parameter
@@ -29,7 +29,7 @@ class VTrie {
         void SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_t &op_stack);
         void DeleteNode(const buffer_t &key, const std::vector<node_t> &stack);
         void CreateInitilNode(const buffer_t &key, const buffer_t &value);
-        bufferarray_t FormatNode(node_t &node, const bool top_level, batchdboparray_t &op_stack, const bool remove=false);
+        embedded_t FormatNode(node_t &node, batchdboparray_t &op_stack, const bool top_level, const bool remove=false);
 
     public:
         VTrie();

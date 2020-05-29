@@ -162,7 +162,9 @@ bool VTrie::Put(const buffer_t &key, const buffer_t &value) {
         // Search for the given key or it's nearest node
         Path path_ = FindPath(key);
         // Now Update
-        UpdateNode(key, value, path_.GetRemaining(), path_.GetStack());
+        nibble_t remaining_ = path_.GetRemaining();
+        std::vector<node_t> stack_ = path_.GetStack();
+        UpdateNode(key, value, remaining_, stack_);
         status_ = true;
     }
     // Todo release the lock
@@ -191,19 +193,19 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
         int leaf_ = 0;
         for(std::string::size_type i = 0; i < stack.size(); i++) {
             node_t node_ = stack.at(i);
-            if(node_.which() == BRANCH_NODE) {
-                leaf_++;
-            } else {
-                switch (node_.which()) {
-                    case EXTENSION_NODE:
-                        leaf_ += boost::get<Extension>(node_).GetKey().size();
-                        break;
-                    case LEAF_NODE:
-                        leaf_ += boost::get<Leaf>(node_).GetKey().size();
-                        break;   
-                    default:
-                        break;
-                }
+
+            switch (node_.which()) {
+                case BRANCH_NODE:
+                    leaf_++;
+                    break;
+                case EXTENSION_NODE:
+                    leaf_ += boost::get<Extension>(node_).GetKey().size();
+                    break;
+                case LEAF_NODE:
+                    leaf_ += boost::get<Leaf>(node_).GetKey().size();
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -255,11 +257,15 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
             if(last_key_.size() || last_node_.which() == LEAF_NODE) {
                 // Shrink extension of leaf
                 boost::get<Leaf>(last_node_).SetKey(last_key_);
-                const bufferarray_t farmatted_node_ = FormatNode(last_node_, false, to_save_);
-                new_branch_.SetBranch(branch_key_, farmatted_node_);
+                const embedded_t farmatted_node_ = FormatNode(last_node_, to_save_, false);
+                if(farmatted_node_.which() == BUFFER) {
+                    new_branch_.SetBranch(branch_key_, boost::get<buffer_t>(farmatted_node_));
+                } else {
+                    // Todo Throw error
+                }
             } else {
                 // remove extension of attaching
-                FormatNode(last_node_, false, to_save_, true);
+                FormatNode(last_node_, to_save_, false, true);
                 new_branch_.SetBranch(branch_key_, boost::get<Extension>(last_node_).GetValue());
             }
         } else {
@@ -338,22 +344,37 @@ buffer_t VTrie::VerifyProof(const buffer_t &root_hash, const buffer_t &key, cons
     return proof_trie_.Select(key);
 }
 
-node_t VTrie::LookupNode(const bufferarray_t &node) {
+node_t VTrie::LookupNode(const embedded_t &node) {
+    node_t found_node_;
     if(IsRawNode(node)) {
-        return DecodeRawNode(node);
-    }
+        return DecodeRawNode(boost::get<bufferarray_t>(node));
+    } else {
+        buffer_t value_ = GetDB().Get(boost::get<buffer_t>(node));
 
-    buffer_t value_ = _db.Get(node.at(0));
-    Node found_node_;
-    if(value_.size()) {
-        found_node_ = DecodeNode(value_);
+        if(value_.size()) {
+            found_node_ = DecodeNode(value_);
+        }
     }
 
     return found_node_;
 }
 
-bufferarray_t VTrie::FormatNode(node_t &node, const bool top_level, batchdboparray_t &op_stack, const bool remove) {
-    const buffer_t rlp_node_ = boost::get<Node>(node).Serialize();
+embedded_t VTrie::FormatNode(node_t &node, batchdboparray_t &op_stack, const bool top_level, const bool remove) {
+    buffer_t rlp_node_;
+    switch (node.which()) {
+        case BRANCH_NODE:
+            rlp_node_ = boost::get<Branch>(node).Serialize();
+            break;
+        case EXTENSION_NODE:
+            rlp_node_ = boost::get<Extension>(node).Serialize();
+            break;
+        case LEAF_NODE:
+            rlp_node_ = boost::get<Leaf>(node).Serialize();
+            break;
+        default:
+            rlp_node_ = boost::get<Node>(node).Serialize();
+            break;
+    }
     
     if(rlp_node_.size() >= 32 || top_level) {
         const buffer_t hash_root_ = boost::get<Node>(node).Hash();
@@ -366,40 +387,51 @@ bufferarray_t VTrie::FormatNode(node_t &node, const bool top_level, batchdboparr
     return boost::get<Node>(node).Raw();
 }
 
-void VTrie::FindValueNodes() {
-
-}
-
-void VTrie::FindDbNodes() {
-
-}
-
-void VTrie::WalkTrie(const buffer_t &root) {
-
-}
-
 void VTrie::SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_t &op_stack) {
     buffer_t last_root_;
     while(stack.size()) {
         auto node_ = stack.back();
         stack.pop_back();
-        if(node_.which() == LEAF_NODE) {
-            key.erase(key.begin() + (key.size() - boost::get<Leaf>(node_).GetKey().size()));
-        } else if(node_.which() == EXTENSION_NODE) {
-            key.erase(key.begin() + (key.size() - boost::get<Extension>(node_).GetKey().size()));
-            if(last_root_.size()) {
-                boost::get<Extension>(node_).SetValue(last_root_);
-            }
-        } else if(node_.which() == BRANCH_NODE) {
-            if(last_root_.size()) {
-                const auto branch_key_ = key.back();
-                key.pop_back();
-                boost::get<Branch>(node_).SetBranch(branch_key_, last_root_);
-            }
+
+        switch (node_.which()) {
+            case LEAF_NODE:
+                nibble_t::iterator start_ = key.begin() + (key.size() - boost::get<Leaf>(node_).GetKey().size());
+                nibble_t::iterator end_ = key.end();
+                key.erase(start_, end_);
+                break;
+            case EXTENSION_NODE:
+                nibble_t::iterator start_ = key.begin() + (key.size() - boost::get<Extension>(node_).GetKey().size());
+                nibble_t::iterator end_ = key.end();
+                key.erase(start_, end_);
+                if(last_root_.size()) {
+                    boost::get<Extension>(node_).SetValue(last_root_);
+                }
+                break;
+            case BRANCH_NODE:
+                if(last_root_.size()) {
+                    const uint_t branch_key_ = key.back();
+                    key.pop_back();
+                    boost::get<Branch>(node_).SetBranch(branch_key_, last_root_);
+                }
+                break;
+            default:
+                // Todo Throw error
+                break;
         }
 
         // Recheck this
-        last_root_ = FormatNode(node_, stack.empty(), op_stack).at(0);
+        embedded_t formatted_root_ = FormatNode(node_, op_stack, stack.empty());
+        switch (formatted_root_.which()) {
+            case BUFFER:
+                last_root_ = boost::get<buffer_t>(formatted_root_);
+                break;
+            case BUFFER_ARRAY:
+                last_root_ = boost::get<bufferarray_t>(formatted_root_).at(0);
+                break;
+            default:
+                // Todo throw error
+                break;
+        }
     }
 
     if(last_root_.size()) {
@@ -424,8 +456,22 @@ void VTrie::Batch(const batchdboparray_t &op_stack) {
 }
 
 bool VTrie::CheckRoot(const buffer_t &root) {
-    const auto node_ = LookupNode(root);
+    bufferarray_t array_root_;
+    array_root_.push_back(root);
+    const node_t node_ = LookupNode(array_root_);
     return !node_.empty();
+}
+
+void VTrie::FindValueNodes() {
+
+}
+
+void VTrie::FindDbNodes() {
+
+}
+
+void VTrie::WalkTrie(const buffer_t &root) {
+
 }
 
 buffer_t VTrie::Select(const buffer_t &root_hash, const buffer_t &key) {
