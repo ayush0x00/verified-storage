@@ -4,10 +4,13 @@
 #include <boost/variant.hpp>
 #include <vector>
 
+#include "alias.hpp"
 #include "leaf.hpp"
 #include "branch.hpp"
 #include "extension.hpp"
 #include "batchdbop.hpp"
+
+using embedded_t = boost::variant<buffer_t, bufferarray_t>;
 
 using batchdboparray_t = std::vector<BatchDBOp>;
 
