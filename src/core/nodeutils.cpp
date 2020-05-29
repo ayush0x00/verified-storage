@@ -3,47 +3,51 @@
 #include "branch.hpp"
 #include "extension.hpp"
 #include "leaf.hpp"
+#include "nodetype.hpp"
 #include "rlp/inc/rlpdecode.hpp"
 #include "utils/nibbles.hpp"
 #include "utils/hex.hpp"
 
 
-Node DecodeNode(const buffer_t &input) {
-    bufferarray_t decode_ = RLPDecoder::DecodeByteList(input);
+node_t DecodeNode(const buffer_t &input) {
+    embedded_t decode_ = RLPDecoder::DecodeByteList(input);
 
-    if(typeid(decode_.at(0)) != typeid(buffer_t)) {
+    if(decode_.which() != BUFFER_ARRAY) {
         // Todo Throw error
         return Node();
     }
 
-    return DecodeRawNode(decode_);
+    return DecodeRawNode(boost::get<bufferarray_t>(decode_));
 }
 
-Node DecodeRawNode(const bufferarray_t &input) {
-    if(input.size() == 17) {
-        return Branch::FromBuffer(input);
-    } else if(input.size() == 2) {
-        nibble_t nibbles_ = StringToNibble(BytesToString(input.at(0)));
-        
-        if(IsTerminator(nibbles_)) {
-            return Leaf(Leaf::DecodeKey(nibbles_), input[1]);
-        }
-
-        return Extension(Extension::DecodeKey(nibbles_), input.at(1));
-    } else {
-        // Todo Throw invalid error
-        return Node();
-    }
-}
-
-bool IsRawNode(const bufferarray_t &input) {
-    bool status = true;
-    for (auto node : input) {
-        if(typeid(node) != typeid(buffer_t)) {
-            status = false;
+node_t DecodeRawNode(const bufferarray_t &input) {
+    node_t decoded_node_;
+    
+    nibble_t nibbles_;
+    switch (input.size()) {
+        case 17: // It's a branch node
+            decoded_node_ = Branch::FromBuffer(input);
             break;
-        }
+        case 2: // It can be either leaf node or extension node
+            nibbles_ = BufferToNibble(input.at(0));
+            
+            if(IsTerminator(nibbles_)) {
+                // It's a leaf node
+                decoded_node_ = Leaf(Leaf::DecodeKey(nibbles_), input.at(1));
+            } else {
+                // It's a branch node
+                decoded_node_ = Extension(Extension::DecodeKey(nibbles_), input.at(1));
+            }
+            break;
+        default:
+            // Todo Throw invalid error and remode node assignment
+            decoded_node_ = Node();
+            break;
     }
 
-    return status;
- }
+    return decoded_node_;
+}
+
+bool IsRawNode(const embedded_t &input) {
+    return input.which() == BUFFER_ARRAY && input.which() != BUFFER;
+}
