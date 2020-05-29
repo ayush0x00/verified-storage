@@ -5,8 +5,8 @@
 #include "leaf.hpp"
 #include "nodetype.hpp"
 #include "rlp/inc/rlpdecode.hpp"
-#include "utils/nibbles.hpp"
-#include "utils/hex.hpp"
+#include "hex.hpp"
+#include "nibbles.hpp"
 
 
 node_t DecodeNode(const buffer_t &input) {

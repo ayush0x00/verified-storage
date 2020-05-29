@@ -2,14 +2,14 @@
 
 #include "nodetype.hpp"
 #include "constants.hpp"
-#include "batchdbop.hpp"
+// #include "batchdbop.hpp"
 #include "nodeutils.hpp"
-#include "leaf.hpp"
-#include "branch.hpp"
-#include "extension.hpp"
-#include "../utils/hex.hpp"
-#include "../utils/nibbles.hpp"
-#include "../keccak/keccak_buffer.hpp"
+// #include "leaf.hpp"
+// #include "branch.hpp"
+// #include "extension.hpp"
+#include "hex.hpp"
+#include "nibbles.hpp"
+#include "keccak_buffer.hpp"
 
 VTrie::VTrie() {
     _is_defined = false;
@@ -94,7 +94,7 @@ void VTrie::PutNode(node_t &node) {
             break;
     }
 
-    _db.Put(hash_, serialized_);
+    GetDB().Put(hash_, serialized_);
 }
 
 void VTrie::CreateInitilNode(const buffer_t &key, const buffer_t &value) {
@@ -170,13 +170,6 @@ bool VTrie::Put(const buffer_t &key, const buffer_t &value) {
     // Todo release the lock
 
     return status_;
-}
-
-Path VTrie::FindPath(const buffer_t &key) {
-    std::vector<Node> stack_;
-    nibble_t target_key_ = BufferToNibble(key);
-
-    nibble_t key_reminder_ = Slice(target_key_, MatchingNibbleLength());
 }
 
 void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key_reminder, std::vector<node_t> &stack) {
@@ -302,7 +295,7 @@ VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie) {
         }
     }
 
-    proof_trie._db.BatchProcess(op_stack_);
+    proof_trie.GetDB().BatchProcess(op_stack_);
 
     return proof_trie;
 }
@@ -452,7 +445,7 @@ VTrie VTrie::Copy() {
 }
 
 void VTrie::Batch(const batchdboparray_t &op_stack) {
-    _db.BatchProcess(op_stack);
+    GetDB().BatchProcess(op_stack);
 }
 
 bool VTrie::CheckRoot(const buffer_t &root) {
@@ -460,6 +453,13 @@ bool VTrie::CheckRoot(const buffer_t &root) {
     array_root_.push_back(root);
     const node_t node_ = LookupNode(array_root_);
     return !node_.empty();
+}
+
+Path VTrie::FindPath(const buffer_t &key) {
+    std::vector<node_t> stack_;
+    nibble_t target_key_ = BufferToNibble(key);
+
+    nibble_t key_reminder_ = Slice(target_key_, MatchingNibbleLength());
 }
 
 void VTrie::FindValueNodes() {
