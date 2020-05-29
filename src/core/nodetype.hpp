@@ -13,4 +13,10 @@ enum EmbeddedNode {
     BUFFER_ARRAY = 1
 };
 
+enum NodeSize {
+    BLANK_NODE_SIZE = 0,
+    BRANCH_NODE_SIZE = 17,
+    OTHER_NODE_SIZE = 2
+};
+
 #endif
