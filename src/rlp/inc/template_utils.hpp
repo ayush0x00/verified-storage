@@ -3,7 +3,6 @@
 
 #include "constants.hpp"
 
-
 template<typename T>
 bool IsNonValue(T input) {
     bool status = false;
