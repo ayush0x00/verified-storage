@@ -4,29 +4,39 @@
 #include <vector>
 #include <iostream>
 
-/**
- * @brief Converts a buffer to nibble
- * 
- * @param input key to convert to nibble
- * @return std::vector<uint> Nibble representation of the input
- */
-std::vector<uint> StringToNibble(const std::string& input);
+#include "alias.hpp"
 
 /**
  * @brief Converts a string to nibble
  * 
  * @param input key to convert to nibble
- * @return std::vector<uint> Nibble representation of the input
+ * @return nibble_t Nibble representation of the input
  */
-std::vector<uint> BufferToNibble(const std::vector<uint64_t>& input);
+nibble_t StringToNibble(const std::string& input);
+
+/**
+ * @brief Convert a nibble to string 
+ * 
+ * @param input value to be converted to string
+ * @return std::string  String representation of the input
+ */
+std::string NibbleToString(const nibble_t& input);
+
+/**
+ * @brief Converts a string to nibble
+ * 
+ * @param input key to convert to nibble
+ * @return nibble_t Nibble representation of the input
+ */
+nibble_t BufferToNibble(const buffer_t& input);
 
 /**
  * @brief Converts a nibble to buffer
  * 
  * @param input Nibble to be converted to buffer
- * @return std::vector<uint64_t> Buffer representation of the input
+ * @return buffer_t Buffer representation of the input
  */
-std::vector<uint64_t> NibbleToBuffer(const std::vector<uint>& input);
+buffer_t NibbleToBuffer(const nibble_t& input);
 
 /**
  * @brief Match the number of inorder matching nibbles of the two given nubbles
@@ -35,7 +45,7 @@ std::vector<uint64_t> NibbleToBuffer(const std::vector<uint>& input);
  * @param input_2 Second nibble
  * @return int Number of matching nibbles
  */
-int MatchingNibbleLength(const std::vector<uint>& input_1, const std::vector<uint>& input_2);
+int MatchingNibbleLength(const nibble_t& input_1, const nibble_t& input_2);
 
 /**
  * @brief Compare two nibble keys
@@ -45,24 +55,24 @@ int MatchingNibbleLength(const std::vector<uint>& input_1, const std::vector<uin
  * @return true if the keys match
  * @return false if keys do not match
  */
-bool DoKeysMatch(std::vector<uint>& input_1, std::vector<uint>& input_2);
+bool DoKeysMatch(nibble_t& input_1, nibble_t& input_2);
 
 /**
  * @brief Prepends hex prefix to nibble
  * 
  * @param input Nibble
  * @param terminator flag to indicate whether there is terminator string or not
- * @return std::vector<uint> Hex Prefixed Nibble
+ * @return nibble_t Hex Prefixed Nibble
  */
-std::vector<uint> AddHexPrefix(const std::vector<uint>& input, bool terminator);
+nibble_t AddHexPrefix(const nibble_t& input, bool terminator);
 
 /**
  * @brief Removes Hex prefix of Nibble
  * 
  * @param input Nibble with hex prefixed
- * @return std::vector<uint> Nibble without hex prefix
+ * @return nibble_t Nibble without hex prefix
  */
-std::vector<uint> RemoveHexPrefix(const std::vector<uint>& input);
+nibble_t RemoveHexPrefix(const nibble_t& input);
 
 /**
  * @brief Checks if hex prefixed path is for terminating leaf node
@@ -71,7 +81,7 @@ std::vector<uint> RemoveHexPrefix(const std::vector<uint>& input);
  * @return true if hex prefixed path is for terminating leaf node
  * @return false if hex prefixed path is not for terminating leaf node
  */
-bool IsTerminator(const std::vector<uint>& input);
+bool IsTerminator(const nibble_t& input);
 
 /**
  * @brief Get the Bytes object
