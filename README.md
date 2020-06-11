@@ -1,6 +1,6 @@
-# Markle Patricia Trie
+# Merkle Patricia Trie
 
-This is an implementation of Modified Markle Patricia Trie as mentioned in Etherium Paper.
+This is an implementation of Modified Merkle Patricia Trie as mentioned in Ethereum Paper.
 
 ## Language Used for implementation
 
