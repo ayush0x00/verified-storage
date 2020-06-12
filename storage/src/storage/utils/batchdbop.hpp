@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include <utils/alias.hpp>
+#include <persistent/alias.hpp>
 
 class BatchDBOp {
     private:

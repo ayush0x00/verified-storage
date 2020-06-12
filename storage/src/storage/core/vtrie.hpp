@@ -3,14 +3,14 @@
 
 #include <boost/variant.hpp>
 
-#include "aliasadvance.hpp"
-#include "node.hpp"
-#include "leaf.hpp"
-#include "branch.hpp"
-#include "extension.hpp"
-#include "path.hpp"
-#include "db.hpp"
-#include "batchdbop.hpp"
+#include <storage/utils/aliasadvance.hpp>
+#include <storage/utils/path.hpp>
+#include <storage/utils/batchdbop.hpp>
+#include <storage/db/db.hpp>
+#include <storage/nodes/node.hpp>
+#include <storage/nodes/leaf.hpp>
+#include <storage/nodes/branch.hpp>
+#include <storage/nodes/extension.hpp>
 
 class VTrie {
     private:
@@ -44,9 +44,9 @@ class VTrie {
         DBConnection GetDB();
         void SetDB(const DBConnection &db);
 
-        static VTrie FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie);
-        bufferarray_t Prove(VTrie &trie, const buffer_t &key);
-        buffer_t VerifyProof(const buffer_t &root_hash, const buffer_t &key, const bufferarray_t &proof_nodes);
+        static VTrie FromProof(const buffer_array_t &proof_nodes, VTrie &proof_trie);
+        buffer_array_t Prove(VTrie &trie, const buffer_t &key);
+        buffer_t VerifyProof(const buffer_t &root_hash, const buffer_t &key, const buffer_array_t &proof_nodes);
 
         Path FindPath(const buffer_t &key);
         VTrie Copy();

@@ -1,7 +1,7 @@
 #include "leaf.hpp"
 
+#include <persistent/enums.hpp>
 #include <utils/nibbles.hpp>
-#include <storage/utils/nodetype.hpp>
 
 
 Leaf::Leaf(nibble_t nibbles, buffer_t value) {
@@ -11,11 +11,11 @@ Leaf::Leaf(nibble_t nibbles, buffer_t value) {
 }
 
 nibble_t Leaf::EncodeKey(const nibble_t& input) {
-    return AddHexPrefix(input, true);
+    return verified::utils::AddHexPrefix(input, true);
 }
 
 nibble_t Leaf::DecodeKey(const nibble_t& input) {
-    return RemoveHexPrefix(input);
+    return verified::utils::RemoveHexPrefix(input);
 }
 
 nibble_t Leaf::GetKey() {
@@ -30,9 +30,9 @@ nibble_t Leaf::EncodedKey() {
     return Leaf::EncodeKey(nibbles_);
 }
 
-bufferarray_t Leaf::Raw() {
-    bufferarray_t raw_;
-    raw_.push_back(NibbleToBuffer(nibbles_));
+buffer_array_t Leaf::Raw() {
+    buffer_array_t raw_;
+    raw_.push_back(verified::utils::NibbleToByte(nibbles_));
     raw_.push_back(value_);
     return raw_;
 }

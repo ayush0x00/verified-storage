@@ -1,7 +1,7 @@
 #ifndef PMT_EXTENSION_NODE_H
 #define PMT_EXTENSION_NODE_H
 
-#include "node.hpp"
+#include <storage/nodes/node.hpp>
 
 class Extension : public Node {
     private:
@@ -18,7 +18,7 @@ class Extension : public Node {
         void SetKey(nibble_t input);
         nibble_t EncodedKey();
 
-        bufferarray_t Raw();
+        buffer_array_t Raw();
 };
 
 #endif

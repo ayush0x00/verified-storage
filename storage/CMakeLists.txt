@@ -9,7 +9,6 @@ add_library(
     src/storage/nodes/extension.hpp
     src/storage/nodes/extension.cpp
     src/storage/utils/aliasadvance.hpp
-    src/storage/utils/nodetype.hpp
     src/storage/utils/nodeutils.hpp
     src/storage/utils/batchdbop.hpp
     src/storage/utils/batchdbop.cpp
@@ -23,4 +22,4 @@ add_library(
 
 target_include_directories(storage PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-target_link_libraries(storage PRIVATE utils rlp keccak)
+target_link_libraries(storage PRIVATE persistent utils rlp keccak)

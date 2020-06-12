@@ -1,7 +1,7 @@
 #ifndef PMT_NODE_H
 #define PMT_NODE_H
 
-#include <utils/alias.hpp>
+#include <persistent/alias.hpp>
 
 class Node {
     protected:

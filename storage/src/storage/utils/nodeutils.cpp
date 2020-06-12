@@ -17,10 +17,10 @@ node_t DecodeNode(const buffer_t &input) {
         return Node();
     }
 
-    return DecodeRawNode(boost::get<bufferarray_t>(decode_));
+    return DecodeRawNode(boost::get<buffer_array_t>(decode_));
 }
 
-node_t DecodeRawNode(const bufferarray_t &input) {
+node_t DecodeRawNode(const BOOST_CONFIG_SUFFIX_HPP &input) {
     node_t decoded_node_;
     
     nibble_t nibbles_;
@@ -29,9 +29,9 @@ node_t DecodeRawNode(const bufferarray_t &input) {
             decoded_node_ = Branch::FromBuffer(input);
             break;
         case OTHER_NODE_SIZE: // It can be either leaf node or extension node
-            nibbles_ = BufferToNibble(input.at(0));
+            nibbles_ = verified::utils::ByteToNibble(input.at(0));
             
-            if(IsTerminator(nibbles_)) {
+            if(verified::utils::IsTerminator(nibbles_)) {
                 // It's a leaf node
                 decoded_node_ = Leaf(Leaf::DecodeKey(nibbles_), input.at(1));
             } else {

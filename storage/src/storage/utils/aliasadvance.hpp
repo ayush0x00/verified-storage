@@ -4,7 +4,7 @@
 #include <boost/variant.hpp>
 #include <vector>
 
-#include <utils/alias.hpp>
+#include <persistent/alias.hpp>
 
 #include <storage/nodes/leaf.hpp>
 #include <storage/nodes/branch.hpp>

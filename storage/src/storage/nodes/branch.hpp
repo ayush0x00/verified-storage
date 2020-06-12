@@ -3,23 +3,23 @@
 
 #include <map>
 
-#include "node.hpp"
+#include <storage/nodes/node.hpp>
 
 class Branch : public Node {
     private:
-        bufferarray_t branches_;
+        buffer_array_t branches_;
 
     public:
         Branch();
         // ~Branch();
 
-        static Node FromBuffer(const bufferarray_t &input);
+        static Node FromBuffer(const buffer_array_t &input);
         void SetBranch(const int loc, const buffer_t &input);
         buffer_t GetBranch(const int input);
-        bufferarray_t GetBranches();
+        buffer_array_t GetBranches();
         std::map<int, buffer_t> GetChildren();
 
-        bufferarray_t Raw();
+        buffer_array_t Raw();
 };
 
 #endif

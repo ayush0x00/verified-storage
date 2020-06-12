@@ -2,16 +2,17 @@
 
 #include <map>
 
-#include "utils/hex.hpp"
-#include "nodetype.hpp"
+#include <persistent/alias.hpp>
+#include <persistent/enums.hpp>
+#include <utils/hex.hpp>
 
 Branch::Branch() {
     branches_.reserve(16);
     node_type_ = BRANCH_NODE;
 }
 
-Node Branch::FromBuffer(const bufferarray_t &input) {
-    bufferarray_t buffer_arr_(input);
+Node Branch::FromBuffer(const buffer_array_t &input) {
+    buffer_array_t buffer_arr_(input);
     if(input.size() > 17) {
         buffer_arr_.resize(17);
     }
@@ -36,16 +37,16 @@ buffer_t Branch::GetBranch(const int input) {
     if(!branch_.empty() && branch_.size()) {
         return branch_;
     } else {
-        return EmptyByte();
+        return verified::utils::EmptyByte();
     }
 }
 
-bufferarray_t Branch::GetBranches() {
+buffer_array_t Branch::GetBranches() {
     return branches_;
 }
 
-bufferarray_t Branch::Raw() {
-    bufferarray_t raw_;
+buffer_array_t Branch::Raw() {
+    buffer_array_t raw_;
     for(auto branch_ : branches_) {
         raw_.push_back(branch_);
     }

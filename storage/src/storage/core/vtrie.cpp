@@ -1,25 +1,26 @@
 #include "vtrie.hpp"
 
-#include "nodetype.hpp"
-#include "constants.hpp"
+#include <persistent/enums.hpp>
+#include <persistent/constants.hpp>
+#include <utils/hex.hpp>
+#include <utils/nibbles.hpp>
+#include <keccak/keccak_buffer.hpp>
+#include <storage/utils/nodeutils.hpp>
+
 // #include "batchdbop.hpp"
-#include "nodeutils.hpp"
 // #include "leaf.hpp"
 // #include "branch.hpp"
 // #include "extension.hpp"
-#include "hex.hpp"
-#include "nibbles.hpp"
-#include "keccak_buffer.hpp"
 
 VTrie::VTrie() {
     _is_defined = false;
-    _EMPTY_TRIE_ROOT = EmptyByte();
+    _EMPTY_TRIE_ROOT = verified::utils::EmptyByte();
     _root = _EMPTY_TRIE_ROOT;
     _db = DBConnection(DEFAULT_DB_FILE);
 }
 
 VTrie::VTrie(const buffer_t &root) {
-    _EMPTY_TRIE_ROOT = EmptyByte();
+    _EMPTY_TRIE_ROOT = verified::utils::EmptyByte();
     _root = _EMPTY_TRIE_ROOT;
     _db = DBConnection(DEFAULT_DB_FILE);
     if(root.size()) {
@@ -30,7 +31,7 @@ VTrie::VTrie(const buffer_t &root) {
 }
 
 VTrie::VTrie(DBConnection &db, const buffer_t &root) {
-    _EMPTY_TRIE_ROOT = EmptyByte();
+    _EMPTY_TRIE_ROOT = verified::utils::EmptyByte();
     _db = !db ? db : DBConnection(DEFAULT_DB_FILE);
     _root = _EMPTY_TRIE_ROOT;
     if(root.size()) {
@@ -98,7 +99,7 @@ void VTrie::PutNode(node_t &node) {
 }
 
 void VTrie::CreateInitilNode(const buffer_t &key, const buffer_t &value) {
-    Leaf new_node_ = Leaf(BufferToNibble(key), value);
+    Leaf new_node_ = Leaf(verified::utils::ByteToNibble(key), value);
     _root = new_node_.Hash();
     // Create a variant object
     node_t node_ = new_node_;
@@ -147,14 +148,14 @@ bool VTrie::Insert(const buffer_t &key, const buffer_t &value) {
 
 bool VTrie::Put(const buffer_t &key, const buffer_t &value) {
     bool status_ = false;
-    if(value.empty() || BytesToString(value).empty()) {
+    if(value.empty() || verified::utils::BytesToString(value).empty()) {
         // If value is empty delete
         status_ = Delet(key);
     }
 
     // Todo Look for the lock and add lock before starting this process
     // Todo check for Keccak-256 hash of the RLP of null
-    if(_root == EmptyByte()) {
+    if(_root == verified::utils::EmptyByte()) {
         // No root, initialize this trie
         CreateInitilNode(key, value);
         status_ = true;
@@ -178,7 +179,7 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
     node_t last_node_ = stack.back();
     stack.pop_back();
 
-    nibble_t key_nibbles_ = BufferToNibble(key);
+    nibble_t key_nibbles_ = verified::utils::ByteToNibble(key);
     // Check if last node is leaf and the key matches to this
     bool match_leaf_ = false;
 
@@ -204,7 +205,7 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
 
         nibble_t last_node_key_(key_nibbles_.begin() + leaf_, key_nibbles_.end());
         nibble_t leaf_key_ = boost::get<Leaf>(last_node_).GetKey();
-        if(MatchingNibbleLength(leaf_key_,  last_node_key_) == leaf_key_.size() &&
+        if(verified::utils::MatchingNibbleLength(leaf_key_,  last_node_key_) == leaf_key_.size() &&
             !key_reminder.size()) {
                 match_leaf_ = true;
         }
@@ -227,7 +228,7 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
     } else {
         // Create a branch node
         nibble_t last_key_ = boost::get<Extension>(last_node_).GetKey();
-        bool matching_length_ = MatchingNibbleLength(last_key_, key_reminder);
+        bool matching_length_ = verified::utils::MatchingNibbleLength(last_key_, key_reminder);
         Branch new_branch_ = Branch();
 
         // Create a new extension node
@@ -278,7 +279,7 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
     SaveStack(key_nibbles_, stack, to_save_);
 }
 
-VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie) {
+VTrie VTrie::FromProof(const buffer_array_t &proof_nodes, VTrie &proof_trie) {
     batchdboparray_t op_stack_;
     
     KeccakBuffer keccak_buffer_ = KeccakBuffer();
@@ -300,9 +301,9 @@ VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie) {
     return proof_trie;
 }
 
-bufferarray_t VTrie::Prove(VTrie &trie, const buffer_t &key) {
+buffer_array_t VTrie::Prove(VTrie &trie, const buffer_t &key) {
     Path path_ = trie.FindPath(key);
-    bufferarray_t proof_;
+    buffer_array_t proof_;
     for(std::string::size_type i = 0; i < path_.GetStack().size(); i++) {
         node_t element_ = path_.GetStack().at(i);
         switch (element_.which()) {
@@ -324,7 +325,7 @@ bufferarray_t VTrie::Prove(VTrie &trie, const buffer_t &key) {
     return proof_;
 }
 
-buffer_t VTrie::VerifyProof(const buffer_t &root_hash, const buffer_t &key, const bufferarray_t &proof_nodes) {
+buffer_t VTrie::VerifyProof(const buffer_t &root_hash, const buffer_t &key, const buffer_array_t &proof_nodes) {
     VTrie proof_trie_ = VTrie(root_hash);
     // Todo use custom exception here
     try {
@@ -340,7 +341,7 @@ buffer_t VTrie::VerifyProof(const buffer_t &root_hash, const buffer_t &key, cons
 node_t VTrie::LookupNode(const embedded_t &node) {
     node_t found_node_;
     if(IsRawNode(node)) {
-        return DecodeRawNode(boost::get<bufferarray_t>(node));
+        return DecodeRawNode(boost::get<buffer_array_t>(node));
     } else {
         buffer_t value_ = GetDB().Get(boost::get<buffer_t>(node));
 
@@ -386,15 +387,17 @@ void VTrie::SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_
         auto node_ = stack.back();
         stack.pop_back();
 
+        nibble_t::iterator start_;
+        nibble_t::iterator end_;
         switch (node_.which()) {
             case LEAF_NODE:
-                nibble_t::iterator start_ = key.begin() + (key.size() - boost::get<Leaf>(node_).GetKey().size());
-                nibble_t::iterator end_ = key.end();
+                start_ = key.begin() + (key.size() - boost::get<Leaf>(node_).GetKey().size());
+                end_ = key.end();
                 key.erase(start_, end_);
                 break;
             case EXTENSION_NODE:
-                nibble_t::iterator start_ = key.begin() + (key.size() - boost::get<Extension>(node_).GetKey().size());
-                nibble_t::iterator end_ = key.end();
+                start_ = key.begin() + (key.size() - boost::get<Extension>(node_).GetKey().size());
+                end_ = key.end();
                 key.erase(start_, end_);
                 if(last_root_.size()) {
                     boost::get<Extension>(node_).SetValue(last_root_);
@@ -418,8 +421,8 @@ void VTrie::SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_
             case BUFFER:
                 last_root_ = boost::get<buffer_t>(formatted_root_);
                 break;
-            case BUFFER_ARRAY:
-                last_root_ = boost::get<bufferarray_t>(formatted_root_).at(0);
+            case BUFFERARRAY:
+                last_root_ = boost::get<buffer_array_t>(formatted_root_).at(0);
                 break;
             default:
                 // Todo throw error
@@ -449,7 +452,7 @@ void VTrie::Batch(const batchdboparray_t &op_stack) {
 }
 
 bool VTrie::CheckRoot(const buffer_t &root) {
-    bufferarray_t array_root_;
+    buffer_array_t array_root_;
     array_root_.push_back(root);
     const node_t node_ = LookupNode(array_root_);
     return !node_.empty();
@@ -457,9 +460,9 @@ bool VTrie::CheckRoot(const buffer_t &root) {
 
 Path VTrie::FindPath(const buffer_t &key) {
     std::vector<node_t> stack_;
-    nibble_t target_key_ = BufferToNibble(key);
+    nibble_t target_key_ = verified::utils::ByteToNibble(key);
 
-    nibble_t key_reminder_ = Slice(target_key_, MatchingNibbleLength());
+    // nibble_t key_reminder_ = verified::utils::Slice(target_key_, verified::utils::MatchingNibbleLength());
 }
 
 void VTrie::FindValueNodes() {

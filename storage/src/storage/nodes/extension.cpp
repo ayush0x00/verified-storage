@@ -1,7 +1,7 @@
 #include "extension.hpp"
 
-#include "nodetype.hpp"
-#include "utils/nibbles.hpp"
+#include <persistent/enums.hpp>
+#include <utils/nibbles.hpp>
 
 Extension::Extension(nibble_t nibble, buffer_t value) {
     nibble_ = nibble;
@@ -10,11 +10,11 @@ Extension::Extension(nibble_t nibble, buffer_t value) {
 }
 
 nibble_t Extension::EncodeKey(const nibble_t& input) {
-    return AddHexPrefix(input, false);
+    return verified::utils::AddHexPrefix(input, false);
 }
 
 nibble_t DecodeKey(const nibble_t& input) {
-    return RemoveHexPrefix(input);
+    return verified::utils::RemoveHexPrefix(input);
 }
 
 nibble_t Extension::GetKey() {
@@ -29,8 +29,8 @@ nibble_t Extension::EncodedKey() {
     return Extension::EncodeKey(nibble_);
 }
 
-bufferarray_t Extension::Raw() {
-    bufferarray_t raw_;
-    raw_.push_back(NibbleToBuffer(EncodedKey()));
+buffer_array_t Extension::Raw() {
+    buffer_array_t raw_;
+    raw_.push_back(verified::utils::NibbleToByte(EncodedKey()));
     raw_.push_back(value_);
 }
