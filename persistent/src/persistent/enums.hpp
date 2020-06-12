@@ -1,7 +1,7 @@
 #ifndef UTILS_ENUMS_H
 #define UTILS_ENUMS_H
 
-enum ElementTypes {
+enum ElementType {
     LONG = 0,
     UNINT64 = 1,
     STRING = 2,
