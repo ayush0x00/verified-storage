@@ -47,7 +47,7 @@ set(BOOST_LIBRARIES
 add_subdirectory(persistent)
 add_subdirectory(utils)
 add_subdirectory(rlp)
-# add_subdirectory(keccak)
+add_subdirectory(keccak)
 # add_subdirectory(storage)
 add_subdirectory(main)
 
