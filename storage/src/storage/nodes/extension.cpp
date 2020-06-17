@@ -33,4 +33,5 @@ buffer_array_t Extension::Raw() {
     buffer_array_t raw_;
     raw_.push_back(verified::utils::NibbleToByte(EncodedKey()));
     raw_.push_back(value_);
+    return raw_;
 }

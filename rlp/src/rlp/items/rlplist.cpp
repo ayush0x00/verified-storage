@@ -20,16 +20,15 @@ rlp::RLPList rlp::RLPList::Create(const buffer_t& input) {
     return RLPList(test_);
 }
 
-rlp::RLPList rlp::RLPList::Create(const buffer_array_t& input) {
-    if(input.empty()) {
-        // buffer_t empty_byte_ = EmptyByte();
-        buffer_array_t empty_byte_;
-        empty_byte_.push_back(verified::utils::EmptyByte());
-    }
+// rlp::RLPList rlp::RLPList::Create(const buffer_array_t& input) {
+//     if(input.empty()) {
+//         // buffer_t empty_byte_ = EmptyByte();
+//         buffer_array_t empty_byte_;
+//         empty_byte_.push_back(verified::utils::EmptyByte());
+//     }
 
+// }
 
-}
-
-rlp::RLPList rlp::RLPList::Create(const variant_t& input) {
+// rlp::RLPList rlp::RLPList::Create(const variant_t& input) {
     
-}   
+// }   

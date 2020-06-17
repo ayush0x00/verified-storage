@@ -16,7 +16,7 @@ nibble_t ByteToNibble(const buffer_t& input) {
     nibble_t nibbles_;
     nibbles_.resize(input.size() * 2);
 
-    for(std::string::size_type i = 0; i < input.size(); i++) {
+    for(std::size_t i = 0; i < input.size(); i++) {
         int loc_ = i * 2;
         nibbles_.at(loc_) = input.at(i) >> 4;
         ++loc_;
@@ -30,7 +30,7 @@ buffer_t NibbleToByte(const nibble_t& input) {
     buffer_t buffer_;
     buffer_.resize(input.size() / 2);
 
-    for(std::string::size_type i = 0; i < buffer_.size(); i++) {
+    for(std::size_t i = 0; i < buffer_.size(); i++) {
         int loc_ = i * 2;
         buffer_.at(i) = (input.at(loc_) << 4) + input.at(++loc_);
     }
@@ -39,7 +39,7 @@ buffer_t NibbleToByte(const nibble_t& input) {
 }
 
 int MatchingNibbleLength(const nibble_t& input_1, const nibble_t& input_2) {
-    std::string::size_type i = 0;
+    std::size_t i = 0;
     while((input_1.at(i) == input_2.at(i)) && input_1.size() > i) {
         i++;
     }

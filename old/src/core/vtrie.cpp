@@ -184,7 +184,7 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
 
     if(last_node_.which() == LEAF_NODE) {
         int leaf_ = 0;
-        for(std::string::size_type i = 0; i < stack.size(); i++) {
+        for(std::size_t i = 0; i < stack.size(); i++) {
             node_t node_ = stack.at(i);
 
             switch (node_.which()) {
@@ -303,7 +303,7 @@ VTrie VTrie::FromProof(const bufferarray_t &proof_nodes, VTrie &proof_trie) {
 bufferarray_t VTrie::Prove(VTrie &trie, const buffer_t &key) {
     Path path_ = trie.FindPath(key);
     bufferarray_t proof_;
-    for(std::string::size_type i = 0; i < path_.GetStack().size(); i++) {
+    for(std::size_t i = 0; i < path_.GetStack().size(); i++) {
         node_t element_ = path_.GetStack().at(i);
         switch (element_.which()) {
             case BRANCH_NODE:

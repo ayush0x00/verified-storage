@@ -18,7 +18,7 @@ Node Branch::FromBuffer(const bufferarray_t &input) {
     
     Branch node_ = Branch();
     // Todo Create template for slicing stl array slice it instead of looping
-    for(std::string::size_type i = 0; i < buffer_arr_.size() - 1; i++) {
+    for(std::size_t i = 0; i < buffer_arr_.size() - 1; i++) {
         node_.SetBranch(i, buffer_arr_.at(i));
     }
 
@@ -56,7 +56,7 @@ bufferarray_t Branch::Raw() {
 
 std::map<int, buffer_t> Branch::GetChildren() {
     std::map<int, buffer_t> children_;
-    for(std::string::size_type i = 0; i <  16; i++) {
+    for(std::size_t i = 0; i <  16; i++) {
         auto branch_ = branches_.at(i);
         if(branch_.empty() && branch_.size()) {
             children_.insert(std::pair<int, buffer_t>(i, branch_));

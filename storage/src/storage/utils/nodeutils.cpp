@@ -20,7 +20,7 @@ node_t DecodeNode(const buffer_t &input) {
     return DecodeRawNode(boost::get<buffer_array_t>(decode_));
 }
 
-node_t DecodeRawNode(const BOOST_CONFIG_SUFFIX_HPP &input) {
+node_t DecodeRawNode(const buffer_array_t &input) {
     node_t decoded_node_;
     
     nibble_t nibbles_;

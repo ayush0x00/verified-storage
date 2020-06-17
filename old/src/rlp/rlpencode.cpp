@@ -7,7 +7,7 @@
 
 std::string RLPEncoder::GetBytes(const std::vector<uint64_t> input) {
     std::string byte_str_ {"<Bytes"};
-    for(std::string::size_type i = 0; i < input.size(); i++ ) {
+    for(std::size_t i = 0; i < input.size(); i++ ) {
         auto byte_ = input[i];
         byte_str_ += " " + IntegerToHex(byte_);
     }

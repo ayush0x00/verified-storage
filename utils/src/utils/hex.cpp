@@ -69,7 +69,7 @@ std::string verified::utils::StringToHex(const std::string& input, bool prefix, 
 
     unsigned int converter_ {0};
 
-    for (std::string::size_type i = 0; i < input.length(); ++i) {
+    for (std::size_t i = 0; i < input.length(); ++i) {
         converter_ = (unsigned int)(unsigned char)input[i];
         stream_ << std::hex << std::setfill('0') <<
             std::setw(2) << (upper ? std::uppercase : std::nouppercase) << converter_;
@@ -82,8 +82,8 @@ std::string verified::utils::HexToString(const std::string& input) {
     std::string stream_ {""};
     std::string hex_str_ {""};
 
-    std::string::size_type start = IsHexPrefixed(input) ? 2 : 0;
-    for(std::string::size_type i = start; i < input.length(); i = i+2) {
+    std::size_t start_ = IsHexPrefixed(input) ? 2 : 0;
+    for(std::size_t i = start_; i < input.length(); i = i+2) {
         hex_str_ = input.substr(i, 2);
         stream_ += std::stoul(hex_str_, nullptr, 16);
     }
@@ -105,7 +105,7 @@ buffer_t verified::utils::IntegerToBytes(const uint64_t input) {
 
     std::ostringstream output_;
     // Only positive integers are allowed
-    output_ << abs(input);
+    output_ << input; // std::abs(input);
 
     std::string converter_str_ = IntegerToHex(std::stoi(output_.str()));
     bytes_.push_back(SafeParseInt(converter_str_, 16));
@@ -133,7 +133,7 @@ buffer_t verified::utils::StringToBytes(const std::string& input, const bool ish
         original_string_ = StripHexPrefix(input);
     }
 
-    for(std::string::size_type i = 0; i < original_string_.length(); i = i + 2) {
+    for(std::size_t i = 0; i < original_string_.length(); i = i + 2) {
         hex_str_ = original_string_.substr(i, 2);
         hex_char_ = std::stoul(hex_str_, nullptr, 16);
         bytes_.push_back(hex_char_);
@@ -144,7 +144,7 @@ buffer_t verified::utils::StringToBytes(const std::string& input, const bool ish
 
 std::string verified::utils::BytesToString(const buffer_t& input) {
     std::string byte_str_ {""};
-    for(std::string::size_type i = 0; i < input.size(); i++ ) {
+    for(std::size_t i = 0; i < input.size(); i++ ) {
         uint64_t byte_ = input[i];
         byte_str_ += byte_;
     }

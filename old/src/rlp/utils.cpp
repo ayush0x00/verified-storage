@@ -8,7 +8,7 @@
 
 std::string BytesToString(std::vector<uint64_t> input) {
     std::string byte_str_ {""};
-    for(std::string::size_type i = 0; i < input.size(); i++ ) {
+    for(std::size_t i = 0; i < input.size(); i++ ) {
         auto byte_ = input[i];
         byte_str_ += byte_;
     }
@@ -46,7 +46,7 @@ std::vector<uint64_t> StringToBytes(const std::string& input) {
     }
     
 
-    for(std::string::size_type i = 0; i < original_string_.length(); i = i + 2) {
+    for(std::size_t i = 0; i < original_string_.length(); i = i + 2) {
         hex_str_ = original_string_.substr(i, 2);
         hex_char_ = std::stoul(hex_str_, nullptr, 16);
         bytes_.push_back(hex_char_);
@@ -95,7 +95,7 @@ bool IsHexString(const std::string& input) {
     bool flag_ = true;
     std::string stripped_string_ = StripHexPrefix(input);
 
-    for(std::string::size_type i = 0; i < stripped_string_.length(); i++) {
+    for(std::size_t i = 0; i < stripped_string_.length(); i++) {
         if(!isxdigit(input[i])) {
             flag_ = false;
             break;
@@ -132,7 +132,7 @@ std::string StringToHex(const std::string& input, bool upper) {
 
     unsigned int converter_ {0};
 
-    for (std::string::size_type i = 0; i < input.length(); ++i)
+    for (std::size_t i = 0; i < input.length(); ++i)
     {
         converter_ = (unsigned int)(unsigned char)input[i];
         stream_ << std::hex << std::setfill('0') <<
@@ -146,8 +146,8 @@ std::string HexToString(const std::string& input) {
     std::string stream_ {""};
     std::string hex_str_ {""};
 
-    std::string::size_type start = IsHexPrefixed(input) ? 2 : 0;
-    for(std::string::size_type i = start; i < input.length(); i = i+2) {
+    std::size_t start = IsHexPrefixed(input) ? 2 : 0;
+    for(std::size_t i = start; i < input.length(); i = i+2) {
         hex_str_ = input.substr(i, 2);
         stream_ += std::stoul(hex_str_, nullptr, 16);
     }
@@ -178,7 +178,7 @@ std::vector<uint64_t> ToBytes(const std::string& input) {
 // std::vector<uint64_t> ArrayToBytes(const std::string input[]) {
 //     std::vector<uint64_t> bytes_;
 
-//     for(std::string::size_type i=0; i < sizeof(input); i++) {
+//     for(std::size_t i=0; i < sizeof(input); i++) {
 
 //     }
 // }

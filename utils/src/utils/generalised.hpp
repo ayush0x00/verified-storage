@@ -88,7 +88,7 @@ template <typename T>
 std::string GetBytes(T input) {
     // std::stringstream stream_;
     // stream_ << "<Bytes";
-    // for(std::string::size_type i = 0; i < input.size(); i++ ) {
+    // for(std::size_t i = 0; i < input.size(); i++ ) {
     //     stream_ << " " << input[i];
     // }
 
@@ -97,7 +97,7 @@ std::string GetBytes(T input) {
     // return stream_.str();
 
     std::string byte_str_ {"<Bytes"};
-    for(std::string::size_type i = 0; i < input.size(); i++ ) {
+    for(std::size_t i = 0; i < input.size(); i++ ) {
         uint64_t byte_ = input[i];
         byte_str_ += " " + IntegerToHex(byte_);
     }
