@@ -473,9 +473,10 @@ void VTrie::WalkTrie(const buffer_t &root) {
 }
 
 buffer_t VTrie::Select(const buffer_t &root_hash, const buffer_t &key) {
-
+    buffer_t test_;
+    return test_;
 }
 
 bool VTrie::Update(const buffer_t &key, const buffer_t &value) {
-
+    return true;
 }
