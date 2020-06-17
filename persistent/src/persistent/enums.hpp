@@ -16,10 +16,10 @@ enum NodeType {
     LEAF_NODE = 3
 };
 
-// enum EmbeddedNode {
-//     BUFFER = 0,
-//     BUFFER_ARRAY = 1
-// };
+enum EmbeddedNode {
+    BYTE = 0,
+    BYTE_ARRAY = 1
+};
 
 enum NodeSize {
     BLANK_NODE_SIZE = 0,
