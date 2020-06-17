@@ -1,2 +1,0 @@
-/usr/bin/ar qc libpmt.a  CMakeFiles/pmt.dir/patricia-merkle-trie.cpp.o
-/usr/bin/ranlib libpmt.a

@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/patricia-merkle-trie.dir/patricia-merkle-trie.cpp.o  -o patricia-merkle-trie /usr/local/boost-1.73.0/lib/libboost_thread.a /usr/local/boost-1.73.0/lib/libboost_regex.a /usr/local/boost-1.73.0/lib/libboost_system.a -lpthread 
