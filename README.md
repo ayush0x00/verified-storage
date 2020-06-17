@@ -15,9 +15,10 @@ C++
 - [x] Implement KECCAK256 and replace sha256 hash generation by KECCAK256
 - [x] Try to get rid of all the pointers.
 - [x] Integrate with boost library
-- [x] Integrate with leveldb library
 - [x] Add CMakeList
 - [x] Add Hunter
+- [x] Integrate hunter with boost library
+- [x] Integrate hunter with leveldb library
 - [x] Create Toolchain compatible for Linux
 - [x] Create Toolchain compatible for Win32/64
 - [ ] Create Toolchain compatible for LLVM
