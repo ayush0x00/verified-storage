@@ -38,3 +38,5 @@ obj
 # IDE Specific files and directories
 .vs
 .vscode
+out
+_builds
