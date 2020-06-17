@@ -39,7 +39,7 @@ buffer_array_t Node::Raw() {
 }
 
 buffer_t Node::Serialize() {
-    return rlp::RLPEncoder::EncodeByteList(Raw());
+    return verified::rlp::RLPEncoder::EncodeByteList(Raw());
 }
 
 buffer_t Node::Hash() {

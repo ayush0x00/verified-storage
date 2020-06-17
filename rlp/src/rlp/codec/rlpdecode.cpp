@@ -3,10 +3,10 @@
 #include <persistent/alias.hpp>
 #include <utils/hex.hpp>
 
-#include "rlp/items/rlpstring.hpp"
+#include <rlp/items/rlpstring.hpp>
 
 
-buffer_t rlp::RLPDecoder::Decode(const buffer_t& bytes_input) {
+buffer_t verified::rlp::RLPDecoder::Decode(const buffer_t& bytes_input) {
     buffer_t decoded_;
     const auto first_byte_ = bytes_input[0];
     int length_ {0};
@@ -46,7 +46,7 @@ buffer_t rlp::RLPDecoder::Decode(const buffer_t& bytes_input) {
 }
 
 
-std::string rlp::RLPDecoder::DecodeByte(const buffer_t& input) {
+std::string verified::rlp::RLPDecoder::DecodeByte(const buffer_t& input) {
     if(input.empty()) {
         return verified::utils::BytesToString(verified::utils::EmptyByte());
     }
@@ -57,7 +57,7 @@ std::string rlp::RLPDecoder::DecodeByte(const buffer_t& input) {
 }
 
 
-std::string rlp::RLPDecoder::DecodeString(const std::string& input) {
+std::string verified::rlp::RLPDecoder::DecodeString(const std::string& input) {
     if(input.empty()) {
         return verified::utils::BytesToString(verified::utils::EmptyByte());
     }
@@ -66,4 +66,12 @@ std::string rlp::RLPDecoder::DecodeString(const std::string& input) {
     const buffer_t decoded_ = Decode(byte_input_);
 
     return verified::utils::BytesToString(decoded_);
+}
+
+
+buffer_array_t verified::rlp::RLPDecoder::DecodeByteList(const buffer_t &input) {
+    // Todo complete this
+    buffer_array_t bytes_array_;
+    bytes_array_[0] = input;
+    return bytes_array_;
 }

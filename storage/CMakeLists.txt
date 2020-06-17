@@ -10,6 +10,7 @@ add_library(
     src/storage/nodes/extension.cpp
     src/storage/utils/aliasadvance.hpp
     src/storage/utils/nodeutils.hpp
+    src/storage/utils/nodeutils.cpp
     src/storage/utils/batchdbop.hpp
     src/storage/utils/batchdbop.cpp
     src/storage/utils/path.hpp

@@ -7,11 +7,6 @@
 #include <keccak/keccak_buffer.hpp>
 #include <storage/utils/nodeutils.hpp>
 
-// #include "batchdbop.hpp"
-// #include "leaf.hpp"
-// #include "branch.hpp"
-// #include "extension.hpp"
-
 VTrie::VTrie() {
     _is_defined = false;
     _EMPTY_TRIE_ROOT = verified::utils::EmptyByte();

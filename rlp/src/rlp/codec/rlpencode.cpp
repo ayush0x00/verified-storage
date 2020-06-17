@@ -3,9 +3,9 @@
 #include <persistent/constants.hpp>
 #include <utils/hex.hpp>
 
-#include "rlp/items/rlpstring.hpp"
+#include <rlp/items/rlpstring.hpp>
 
-buffer_t rlp::RLPEncoder::EncodeLength(const int len, const int offset) {
+buffer_t verified::rlp::RLPEncoder::EncodeLength(const int len, const int offset) {
     buffer_t encode_length_;
     if (len <= SINGLE_BYTE_STRING) {
         encode_length_ = verified::utils::IntegerToBytes(len + offset);
@@ -22,7 +22,7 @@ buffer_t rlp::RLPEncoder::EncodeLength(const int len, const int offset) {
     return encode_length_;
 }
 
-buffer_t rlp::RLPEncoder::Encode(const buffer_t bytes_value) {
+buffer_t verified::rlp::RLPEncoder::Encode(const buffer_t bytes_value) {
     buffer_t encode_;
 
     if (bytes_value.empty() || (bytes_value.size() == 1 && bytes_value.at(0) == EMPTY_STRING)) {
@@ -48,11 +48,11 @@ buffer_t rlp::RLPEncoder::Encode(const buffer_t bytes_value) {
     return encode_;
 }
 
-buffer_t rlp::RLPEncoder::EncodeString(RLPString input) {
+buffer_t verified::rlp::RLPEncoder::EncodeString(RLPString input) {
     return Encode(input.GetBytes());
 }
 
-buffer_t rlp::RLPEncoder::EncodeString(const std::string input) {
+buffer_t verified::rlp::RLPEncoder::EncodeString(const std::string input) {
     RLPString rlp_str_ = RLPString::Create(input);
     return EncodeString(rlp_str_);
 }

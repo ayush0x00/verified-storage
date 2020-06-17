@@ -1,23 +1,17 @@
 #include "nodeutils.hpp"
 
-#include "branch.hpp"
-#include "extension.hpp"
-#include "leaf.hpp"
-#include "nodetype.hpp"
-#include "rlp/inc/rlpdecode.hpp"
-#include "hex.hpp"
-#include "nibbles.hpp"
+#include <persistent/enums.hpp>
+#include <utils/hex.hpp>
+#include <utils/nibbles.hpp>
+#include <rlp/codec/rlpencode.hpp>
+#include <rlp/codec/rlpdecode.hpp>
+#include <storage/nodes/leaf.hpp>
+#include <storage/nodes/extension.hpp>
+#include <storage/nodes/branch.hpp>
 
 
-node_t DecodeNode(const buffer_t &input) {
-    embedded_t decode_ = RLPDecoder::DecodeByteList(input);
-
-    if(decode_.which() != BUFFER_ARRAY) {
-        // Todo Throw error
-        return Node();
-    }
-
-    return DecodeRawNode(boost::get<buffer_array_t>(decode_));
+bool IsRawNode(const embedded_t &input) {
+    return input.which() == EmbeddedNode::BYTE_ARRAY && input.which() != EmbeddedNode::BYTE;
 }
 
 node_t DecodeRawNode(const buffer_array_t &input) {
@@ -48,6 +42,13 @@ node_t DecodeRawNode(const buffer_array_t &input) {
     return decoded_node_;
 }
 
-bool IsRawNode(const embedded_t &input) {
-    return input.which() == BUFFER_ARRAY && input.which() != BUFFER;
+node_t DecodeNode(const buffer_t &input) {
+    embedded_t decode_ = verified::rlp::RLPDecoder::DecodeByteList(input);
+
+    if(decode_.which() != EmbeddedNode::BYTE_ARRAY) {
+        // Todo Throw error
+        return Node();
+    }
+
+    return DecodeRawNode(boost::get<buffer_array_t>(decode_));
 }
