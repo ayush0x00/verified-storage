@@ -28,7 +28,8 @@ add_subdirectory(keccak)
 add_subdirectory(storage)
 add_subdirectory(main)
 
-# set(SOURCE rlp.cpp)
-# add_executable(vn-rlp ${SOURCE})
+# set(SOURCE storage.cpp)
+# add_executable(vn-storage ${SOURCE})
 
-# target_link_libraries(vn-rlp PRIVATE utils rlp)
+# target_link_libraries(vn-storage PRIVATE persistent utils rlp keccak storage)
+
