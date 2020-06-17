@@ -22,4 +22,8 @@ add_library(
 
 target_include_directories(storage PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-target_link_libraries(storage PRIVATE persistent utils rlp keccak)
+# Leveldb library
+hunter_add_package(leveldb)
+find_package(leveldb CONFIG REQUIRED)
+
+target_link_libraries(storage PRIVATE leveldb::leveldb persistent utils rlp keccak)
