@@ -1,11 +1,12 @@
 # Merkle Patricia Trie
 
-![Language](https://img.shields.io/badge/language-C%2B%2B14-blue)
+![Language](https://img.shields.io/badge/language-C++14-blue)
 [![LICENSE](https://img.shields.io/github/license/verified-network/verified-storage)](LICENSE)
 [![GitHub Issues](https://img.shields.io/github/issues/verified-network/verified-storage)](https://github.com/verified-network/verified-storage/issues)
 ![Status](https://img.shields.io/badge/status-unstable-red)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/verified-network/verified-storage)
 <!-- ![Sonar Quality Gate](https://img.shields.io/sonar/:metric/:component?server=https%3A%2F%2Fsonarcloud.io&sonarVersion=4.2) -->
+![Website](https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_color=blue&up_message=online&url=https%3A%2F%2Fwww.verified.network%2F)
 > This is an implementation of Modified Merkle Patricia Trie as mentioned in Ethereum Paper.
 
 ## Contact
