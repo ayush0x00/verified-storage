@@ -1,8 +1,9 @@
 # Merkle Patricia Trie
 
 ![Language](https://img.shields.io/badge/language-C%2B%2B14-blue)
-[![GitHub Issues](https://img.shields.io/github/issues/verified-network/verified-storage)](https://github.com/verified-network/verified-storage/issues)
 [![LICENSE](https://img.shields.io/github/license/verified-network/verified-storage)](LICENSE)
+[![GitHub Issues](https://img.shields.io/github/issues/verified-network/verified-storage)](https://github.com/verified-network/verified-storage/issues)
+![Status](https://img.shields.io/badge/status-unstable-red)
 
 > This is an implementation of Modified Merkle Patricia Trie as mentioned in Ethereum Paper.
 
@@ -89,4 +90,4 @@ All contributions are made under the [MIT License](https://opensource.org/licens
 - [ ] Check memory footprint of the entire library
 - [ ] Improve memory foorprint and efficiency of library (If necessary)
 
-*NOTE:* Currently this library is under development and unstable, NOT FOR PRODUCTION.
+**NOTE:** Currently this library is under development and unstable, NOT FOR PRODUCTION.
