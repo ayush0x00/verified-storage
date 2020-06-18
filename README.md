@@ -81,7 +81,7 @@ All contributions are made under the [MIT License](https://opensource.org/licens
 - [x] Create Toolchain compatible for Linux
 - [x] Create Toolchain compatible for Win32/64
 - [ ] Create Toolchain compatible for LLVM
-- [ ] Add Build Instructions in the Readme
+- [x] Add Build Instructions in the Readme
 - [x] ~~Add Makefile~~
 - [ ] Create Code Documentation
 - [ ] Create Library Documentation
