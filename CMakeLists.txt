@@ -1,3 +1,7 @@
+# Verified Storage: Modified Merkle Patricia Trie implementation in C++.
+# Copyright 2019-2020 Verified Networks (Kallol Borah).
+# Licensed under the MIT License. See the LICENSE file.
+
 # This is a CMake for verified-storage
 cmake_minimum_required(VERSION 3.8.0)
 
