@@ -2,6 +2,7 @@
 
 ![Language](https://img.shields.io/badge/language-C%2B%2B14-blue)
 [![GitHub Issues](https://img.shields.io/github/issues/verified-network/verified-storage)](https://github.com/verified-network/verified-storage/issues)
+[![LICENSE](https://img.shields.io/github/license/verified-network/verified-storage)](LICENSE)
 
 > This is an implementation of Modified Merkle Patricia Trie as mentioned in Ethereum Paper.
 
@@ -43,7 +44,7 @@ cmake --build . # Build all default targets.
 ```shell
 cmake -H. -Bbuild -DHUNTER_STATUS_DEBUG=ON -DCMAKE_BUILD_TYPE=Release   # Configure the project in the build directory
  
-cmake --build build --config Release                                    # Build all defaulr targets as release targets.
+cmake --build build --config Release                                    # Build all default targets as release targets.
 ```
 
 On **Windows** we support Visual Studio 2017, and 2019. You should generate a Visual Studio solution file (`.sln`) for the 64-bit architecture via the following command:
