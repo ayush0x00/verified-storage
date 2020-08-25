@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See the LICENSE file.
 
 # This is a CMake for verified-storage
-cmake_minimum_required(VERSION 3.8.0)
+cmake_minimum_required(VERSION 3.16.0)
 
 # Include Hunter configurations
 Include("cmake/HunterGate.cmake")
