@@ -39,4 +39,5 @@ obj
 .vs
 .vscode
 out
+_build
 _builds
