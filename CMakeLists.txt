@@ -17,9 +17,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project(verified-storage VERSION 0.1.0)
 
-# message(STATUS "Name: ${PROJECT_NAME}")
-# message(STATUS "Version: ${PROJECT_VERSION}")
-
 # Boost Header only library
 hunter_add_package(Boost)
 find_package(Boost CONFIG REQUIRED)
