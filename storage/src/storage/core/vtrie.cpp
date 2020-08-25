@@ -179,7 +179,7 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
     bool match_leaf_ = false;
 
     if(last_node_.which() == LEAF_NODE) {
-        int leaf_ = 0;
+        size_t leaf_ = 0;
         for(std::size_t i = 0; i < stack.size(); i++) {
             node_t node_ = stack.at(i);
 
