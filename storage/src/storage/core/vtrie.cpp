@@ -1,5 +1,7 @@
 #include "vtrie.hpp"
 
+#include <sstream>
+
 #include <constants/enums.hpp>
 #include <constants/macros.hpp>
 #include <utils/hex.hpp>
@@ -45,6 +47,11 @@ void VTrie::Root(const buffer_t &root) {
 }
 
 void VTrie::SetRoot(const buffer_t &root) {
+    if(root.size() != 32) {
+        std::ostringstream stream_;
+        stream_ << "Invalid root length. Roots are 32 bytes, given root is " << root.size() << " bytes.";
+        std::logic_error(stream_.str());
+    }
     _root = root.size() ? root : _EMPTY_TRIE_ROOT;
 }
 
@@ -93,7 +100,7 @@ void VTrie::PutNode(node_t &node) {
     GetDB().Put(hash_, serialized_);
 }
 
-void VTrie::CreateInitilNode(const buffer_t &key, const buffer_t &value) {
+void VTrie::CreateInitialNode(const buffer_t &key, const buffer_t &value) {
     Leaf new_node_ = Leaf(verified::utils::ByteToNibble(key), value);
     _root = new_node_.Hash();
     // Create a variant object
@@ -152,7 +159,7 @@ bool VTrie::Put(const buffer_t &key, const buffer_t &value) {
     // Todo check for Keccak-256 hash of the RLP of null
     if(_root == verified::utils::EmptyByte()) {
         // No root, initialize this trie
-        CreateInitilNode(key, value);
+        CreateInitialNode(key, value);
         status_ = true;
     } else {
         // Search for the given key or it's nearest node
@@ -174,12 +181,19 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
     node_t last_node_ = stack.back();
     stack.pop_back();
 
+    if(last_node_.empty()) {
+        // Throw a proper error
+        std::logic_error("Stack underflow");
+    }
+
+    // Add new nodes
     nibble_t key_nibbles_ = verified::utils::ByteToNibble(key);
+
     // Check if last node is leaf and the key matches to this
     bool match_leaf_ = false;
 
     if(last_node_.which() == LEAF_NODE) {
-        size_t leaf_ = 0;
+        std::size_t leaf_ = 0;
         for(std::size_t i = 0; i < stack.size(); i++) {
             node_t node_ = stack.at(i);
 
@@ -200,8 +214,7 @@ void VTrie::UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key
 
         nibble_t last_node_key_(key_nibbles_.begin() + leaf_, key_nibbles_.end());
         nibble_t leaf_key_ = boost::get<Leaf>(last_node_).GetKey();
-        if(verified::utils::MatchingNibbleLength(leaf_key_,  last_node_key_) == leaf_key_.size() &&
-            !key_reminder.size()) {
+        if(verified::utils::MatchingNibbleLength(leaf_key_,  last_node_key_) == leaf_key_.size() && key_reminder.empty()) {
                 match_leaf_ = true;
         }
     }
@@ -325,9 +338,9 @@ buffer_t VTrie::VerifyProof(const buffer_t &root_hash, const buffer_t &key, cons
     // Todo use custom exception here
     try {
         proof_trie_ = FromProof(proof_nodes, proof_trie_);
-    }
-    catch(const std::exception& e) {
+    } catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
+        std::logic_error("Invalid proof nodes given.");
     }
 
     return proof_trie_.Select(key);
