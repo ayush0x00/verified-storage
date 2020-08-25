@@ -59,7 +59,7 @@ After the necessary dependencies have been downloaded and built and the solution
 ## Tools
 
 The Verified Storage includes the following tools in addition to the Storage:
-* **[persistent](persistent/)**: A list of constants, aliases and enums.
+* **[constants](constants/)**: A list of macros, aliases and enums.
 * **[utils](utils/)**: A utility functionality used as utility
 * **[rlp](rlp/)**: A RLP encoder/decoder tool
 * **[keccak](keccak/)**: Keccak Hashing implementation
