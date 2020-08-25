@@ -1,7 +1,7 @@
 #ifndef PMT_NODE_UTILS_H
 #define PMT_NODE_UTILS_H
 
-#include <persistent/alias.hpp>
+#include <constants/alias.hpp>
 #include <storage/utils/aliasadvance.hpp>
 #include <storage/nodes/node.hpp>
 

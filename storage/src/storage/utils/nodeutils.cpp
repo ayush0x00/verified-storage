@@ -1,6 +1,6 @@
 #include "nodeutils.hpp"
 
-#include <persistent/enums.hpp>
+#include <constants/enums.hpp>
 #include <utils/hex.hpp>
 #include <utils/nibbles.hpp>
 #include <rlp/codec/rlpencode.hpp>

@@ -1,6 +1,6 @@
 #include "nibbles.hpp"
 
-#include "hex.hpp"                                                                                                                             
+#include <utils/hex.hpp>                                                                                                                             
 
 nibble_t verified::utils::StringToNibble(const std::string& input) {
     buffer_t buffer_ = StringToBytes(input);

@@ -15,6 +15,8 @@ add_library(
     src/storage/utils/batchdbop.cpp
     src/storage/utils/path.hpp
     src/storage/utils/path.cpp
+    # src/storage/utils/foundnode.hpp
+    # src/storage/utils/foundnode.cpp
     src/storage/db/db.hpp
     src/storage/db/db.cpp
     src/storage/core/vtrie.hpp
@@ -27,4 +29,4 @@ target_include_directories(storage PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 hunter_add_package(leveldb)
 find_package(leveldb CONFIG REQUIRED)
 
-target_link_libraries(storage PRIVATE leveldb::leveldb persistent utils rlp keccak)
+target_link_libraries(storage PRIVATE leveldb::leveldb constants utils rlp keccak)

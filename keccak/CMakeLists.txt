@@ -8,4 +8,4 @@ add_library(
 
 target_include_directories(keccak PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-target_link_libraries(keccak PRIVATE persistent utils)
+target_link_libraries(keccak PRIVATE constants utils)

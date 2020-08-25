@@ -1,6 +1,6 @@
 #include "node.hpp"
 
-#include <persistent/enums.hpp>
+#include <constants/enums.hpp>
 #include <utils/hex.hpp>
 #include <rlp/codec/rlpencode.hpp>
 #include <keccak/keccak_buffer.hpp>

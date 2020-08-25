@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <persistent/alias.hpp>
+#include <constants/alias.hpp>
 
 namespace verified {
     namespace rlp {

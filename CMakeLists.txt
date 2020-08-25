@@ -25,15 +25,15 @@ hunter_add_package(Boost)
 find_package(Boost CONFIG REQUIRED)
 
 # Add project specific subdirectories
-add_subdirectory(persistent)
+add_subdirectory(constants)
 add_subdirectory(utils)
 add_subdirectory(rlp)
 add_subdirectory(keccak)
 add_subdirectory(storage)
-add_subdirectory(main)
+# add_subdirectory(main)
 
-# set(SOURCE storage.cpp)
-# add_executable(vn-storage ${SOURCE})
+set(SOURCE storage.cpp)
+add_executable(vn-storage ${SOURCE})
 
-# target_link_libraries(vn-storage PRIVATE persistent utils rlp keccak storage)
+target_link_libraries(vn-storage PRIVATE persistent utils rlp keccak storage)
 

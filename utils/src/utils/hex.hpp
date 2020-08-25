@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <vector>
 
-#include <persistent/alias.hpp>
+#include <constants/alias.hpp>
 
 namespace verified {
     namespace utils {

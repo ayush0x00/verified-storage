@@ -1,6 +1,6 @@
 #include "rlpdecode.hpp"
 
-#include <persistent/alias.hpp>
+#include <constants/alias.hpp>
 #include <utils/hex.hpp>
 
 #include <rlp/items/rlpstring.hpp>

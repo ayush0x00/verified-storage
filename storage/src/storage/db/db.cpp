@@ -3,8 +3,8 @@
 #include <leveldb/write_batch.h>
 #include <string>
 
-#include <persistent/alias.hpp>
-#include <persistent/constants.hpp>
+#include <constants/alias.hpp>
+#include <constants/macros.hpp>
 
 #include <utils/hex.hpp>
 #include <storage/utils/aliasadvance.hpp>

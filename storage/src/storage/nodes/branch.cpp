@@ -2,8 +2,8 @@
 
 #include <map>
 
-#include <persistent/alias.hpp>
-#include <persistent/enums.hpp>
+#include <constants/alias.hpp>
+#include <constants/enums.hpp>
 #include <utils/hex.hpp>
 
 Branch::Branch() {

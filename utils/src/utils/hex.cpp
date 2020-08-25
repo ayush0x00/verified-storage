@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <algorithm>
 
-#include <persistent/constants.hpp>
+#include <constants/macros.hpp>
 
 buffer_t verified::utils::EmptyByte() {
     return StringToBytes(std::to_string(EMPTY_STRING), true);

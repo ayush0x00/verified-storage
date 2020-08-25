@@ -12,4 +12,4 @@ add_library(
 
 target_include_directories(rlp PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-target_link_libraries(rlp PRIVATE persistent utils)
+target_link_libraries(rlp PRIVATE constants utils)

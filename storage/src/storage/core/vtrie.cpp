@@ -1,7 +1,7 @@
 #include "vtrie.hpp"
 
-#include <persistent/enums.hpp>
-#include <persistent/constants.hpp>
+#include <constants/enums.hpp>
+#include <constants/macros.hpp>
 #include <utils/hex.hpp>
 #include <utils/nibbles.hpp>
 #include <keccak/keccak_buffer.hpp>
@@ -469,7 +469,7 @@ void VTrie::FindDbNodes() {
 }
 
 void VTrie::WalkTrie(const buffer_t &root) {
-
+    nibble_t key_reminder_ = verified::utils::Slice(target_key_, verified::utils::MatchingNibbleLength());
 }
 
 buffer_t VTrie::Select(const buffer_t &root_hash, const buffer_t &key) {

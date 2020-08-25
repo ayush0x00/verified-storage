@@ -4,9 +4,9 @@
 // #include <sstream>
 // #include <iomanip>
 
-#include <persistent/alias.hpp>
-#include <persistent/constants.hpp>
-#include <persistent/enums.hpp>
+#include <constants/alias.hpp>
+#include <constants/macros.hpp>
+#include <constants/enums.hpp>
 
 template<typename T>
 bool IsNonValue(T input) {
