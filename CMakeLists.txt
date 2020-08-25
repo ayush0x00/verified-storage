@@ -30,7 +30,6 @@ add_subdirectory(storage)
 # add_subdirectory(main)
 
 set(SOURCE storage.cpp)
-add_executable(vn-storage ${SOURCE})
+add_executable(vnstorage ${SOURCE})
 
-target_link_libraries(vn-storage PRIVATE constants utils rlp keccak storage)
-
+target_link_libraries(vnstorage PRIVATE constants utils rlp keccak storage)
