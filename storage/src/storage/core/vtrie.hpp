@@ -51,9 +51,18 @@ class VTrie {
         
         void WalkTrie(const buffer_t &root); // Todo need to check what should be passed as parameter
         
+        /**
+         * @brief Saves a stack
+         * 
+         * @param key the key. Should follow the stack
+         * @param stack stack of nodes to the value given by the key
+         * @param op_stack stack of level db operations to commit at the end of the function
+         */
         void SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_t &op_stack);
         
-        void DeleteNode(const buffer_t &key, const std::vector<node_t> &stack);
+        nibble_t ProcessBranchNode(nibble_t &key, uint_t &branchKey, node_t &branchNode, node_t &parentNode, std::vector<node_t> &stack);
+
+        void DeleteNode(const buffer_t &key, std::vector<node_t> &stack);
         
         /**
          * @brief Create a Initial Node form the empty tree

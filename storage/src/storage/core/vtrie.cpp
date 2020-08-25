@@ -407,12 +407,12 @@ void VTrie::SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_
                 start_ = key.begin() + (key.size() - boost::get<Extension>(node_).GetKey().size());
                 end_ = key.end();
                 key.erase(start_, end_);
-                if(last_root_.size()) {
+                if(!last_root_.empty()) {
                     boost::get<Extension>(node_).SetValue(last_root_);
                 }
                 break;
             case BRANCH_NODE:
-                if(last_root_.size()) {
+                if(!last_root_.empty()) {
                     const uint_t branch_key_ = key.back();
                     key.pop_back();
                     boost::get<Branch>(node_).SetBranch(branch_key_, last_root_);
@@ -438,15 +438,121 @@ void VTrie::SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_
         }
     }
 
-    if(last_root_.size()) {
+    if(!last_root_.empty()) {
         SetRoot(last_root_);
     }
 
     Batch(op_stack);
 }
 
-void VTrie::DeleteNode(const buffer_t &key, const std::vector<node_t> &stack) {
+nibble_t ProcessBranchNode(nibble_t &key, uint_t &branch_key, node_t &branch_node, node_t &parent_node, std::vector<node_t> &stack) {
+    // branch node is the node ON the branch node not THE branch node
+    if(parent_node.empty() || parent_node.which() == BRANCH_NODE) {
+        if(!parent_node.empty()) {
+            stack.push_back(parent_node);
+        }
 
+        if(branch_node.which() == BRANCH_NODE) {
+            // Create an extension node
+            // branch -> extension -> branch
+            nibble_t branch_key_list_;
+            branch_key_list_.push_back(branch_key);
+            buffer_t branch_value_;
+            const auto extension_node_ = Extension(branch_key_list_, branch_value_);
+            stack.push_back(extension_node_);
+            key.push_back(branch_key);
+        } else {
+            nibble_t branch_node_key_;
+            switch (branch_node.which()) {
+                case EXTENSION_NODE:
+                    branch_node_key_ = boost::get<Extension>(branch_node).GetKey();
+                    break;
+                case LEAF_NODE:
+                    branch_node_key_ = boost::get<Leaf>(branch_node).GetKey();
+                    break;
+                default:
+                    // TODO: throw error
+                    // branch_node_key_ = boost::get<Node>(branch_node).GetKey();
+                    break;
+            }
+
+            branch_node_key_.insert(branch_node_key_.begin(), branch_key);
+            switch (branch_node.which()) {
+                case EXTENSION_NODE:
+                    boost::get<Extension>(branch_node).SetKey(verified::utils::Slice(branch_node_key_, 0));
+                    break;
+                case LEAF_NODE:
+                    boost::get<Leaf>(branch_node).SetKey(verified::utils::Slice(branch_node_key_, 0));
+                    break;
+                default:
+                    // TODO: throw error
+                    break;
+            }
+            key.insert(key.end(), branch_node_key_.begin(), branch_node_key_.end());
+        }
+
+        // stack.push_back(branch_node);
+    }  else {
+        // Parent is an extension
+        nibble_t parent_key_ = boost::get<Extension>(parent_node).GetKey();
+
+        if(branch_node.which() == BRANCH_NODE) {
+            // ext -> branch
+            parent_key_.push_back(branch_key);
+            key.push_back(branch_key);
+            boost::get<Extension>(parent_node).SetKey(parent_key_);
+            stack.push_back(parent_node);
+        } else {
+            nibble_t branch_node_key_ = boost::get<Extension>(branch_node).GetKey();
+            // branch node is a leaf node or extension and parent node is an extension
+            // add two keys together
+            // dont push the parent node
+            branch_node_key_.insert(branch_node_key_.begin(), branch_key);
+            key.insert(key.end(), branch_node_key_.begin(), branch_node_key_.end());
+            parent_key_.insert(parent_key_.end(), branch_node_key_.begin(), branch_node_key_.end());
+            boost::get<Extension>(branch_node).SetKey(parent_key_);
+        }
+
+        // stack.push_back(branch_node);
+    }
+
+    stack.push_back(branch_node);
+
+    return key;
+}
+
+void VTrie::DeleteNode(const buffer_t &key, std::vector<node_t> &stack) {
+    node_t last_node_ = stack.back();
+    stack.pop_back();
+
+    if(last_node_.empty()) {
+        std::logic_error("Stack is empty.");
+    }
+
+    auto parent_node_ = stack.back();
+    stack.pop_back();
+
+    batchdboparray_t op_stack_;
+
+    auto key_ = verified::utils::ByteToNibble(key);
+
+    if(parent_node_.empty()) {
+        // the root here has to be leaf
+        _root = _EMPTY_TRIE_ROOT;
+    } else {
+        if(last_node_.which() == BRANCH_NODE) {
+            buffer_t empty_value_;
+            boost::get<Branch>(last_node_).SetValue(empty_value_);
+        } else {
+            // The last node has to be a leaf if it's not a branch
+            // And a leaf's parent, if it has one, must be branch
+            if(parent_node_.which() != BRANCH_NODE) {
+                std::logic_error("Expected branch node.");
+            }
+
+            auto last_node_key_ = boost::get<Leaf>(last_node_).GetKey();
+        }
+    }
 }
 
 VTrie VTrie::Copy() {
