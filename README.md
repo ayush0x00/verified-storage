@@ -29,7 +29,7 @@ cd verified-storage
 ```
 
 #### Install CMake
-CMake is used to control the build configuration of the project. Latest version of CMake is required (at the time of writing 3.8.0). We strongly recommend you to install CMake by downloading and unpacking and unpacking the binary distribution of the latest version available on [**the CMake download page**](https://cmake.org/download/).
+CMake is used to control the build configuration of the project. Latest version of CMake is required (at the time of writing 3.16.0). We strongly recommend you to install CMake by downloading and unpacking and unpacking the binary distribution of the latest version available on [**the CMake download page**](https://cmake.org/download/).
 
 The CMake package available on the operating system can also be used provided it meets the minimum version requirement.
 
