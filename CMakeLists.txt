@@ -27,7 +27,7 @@ add_subdirectory(utils)
 add_subdirectory(rlp)
 add_subdirectory(keccak)
 add_subdirectory(storage)
-# add_subdirectory(main)
+# add_subdirectory(test)
 
 set(SOURCE storage.cpp)
 add_executable(vnstorage ${SOURCE})
