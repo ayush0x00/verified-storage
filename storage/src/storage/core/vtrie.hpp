@@ -34,10 +34,6 @@ class VTrie {
          * @param node node to be put in db
          */
         void PutNode(node_t &node);
-
-        void FindValueNodes(); // Todo need to check what should be passed as parameter
-        
-        void FindDbNodes(); // Todo need to check what should be passed as parameter
         
         /**
          * @brief Updates a node
@@ -48,6 +44,10 @@ class VTrie {
          * @param stack TrieNode stack
          */
         void UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key_reminder, std::vector<node_t> &stack);
+
+        void FindValueNodes(); // Todo need to check what should be passed as parameter
+        
+        void FindDbNodes(); // Todo need to check what should be passed as parameter
         
         void WalkTrie(const buffer_t &root); // Todo need to check what should be passed as parameter
         
@@ -100,16 +100,77 @@ class VTrie {
         embedded_t FormatNode(node_t &node, batchdboparray_t &op_stack, const bool top_level, const bool remove=false);
 
     public:
+        /**
+         * @brief Construct a new VTrie object
+         * 
+         */
         VTrie();
+        
         // ~VTrie();
+        
+        /**
+         * @brief Construct a new VTrie object
+         * 
+         * @param root 
+         */
         VTrie(const buffer_t &root);
+
+        /**
+         * @brief Construct a new VTrie object
+         * 
+         * @param db 
+         * @param root 
+         */
         VTrie(DBConnection &db, const buffer_t &root);
+
+        /**
+         * @brief Get the Root object
+         * 
+         * @return buffer_t 
+         */
         buffer_t GetRoot();
+
+        /**
+         * @brief Set the root value for the Trie
+         * 
+         * @param root root for Trie
+         */
         void Root(const buffer_t &root);
+
+        /**
+         * @brief Set the Root object
+         * 
+         * @param root 
+         */
         void SetRoot(const buffer_t &root);
+
+        /**
+         * @brief Get the isdefined status
+         * 
+         * @return true - defined
+         * @return false - not defined
+         */
         bool IsDefined();
+
+        /**
+         * @brief Set the is defined status
+         * 
+         * @param is_defined whether Trie is defined or not
+         */
         void IsDefined(const bool is_defined);
+
+        /**
+         * @brief Database connection to leveldb
+         * 
+         * @return DBConnection leveldb database connection
+         */
         DBConnection GetDB();
+        
+        /**
+         * @brief Sets the leveldb database connection
+         * 
+         * @param db leveldb database connection
+         */
         void SetDB(const DBConnection &db);
 
         /**
@@ -149,10 +210,41 @@ class VTrie {
          */
         Path FindPath(const buffer_t &key);
 
+        /**
+         * @brief Create a new Trie from the same database
+         * 
+         * @return VTrie New Trie object
+         */
         VTrie Copy();
         
+        /**
+         * @brief The given hash of operations (insertion or deletion) are executed on the DB
+         * 
+         * @example
+         * batchdboparray_t ops;
+         * operation_ = BatchDBOp("del", verified::utils::StringToBytes("father"));
+         * ops.push_back(operation_);
+         * BatchDBOp operation_ = BatchDBOp("put", verified::utils::StringToBytes("name"), verified::utils::StringToBytes("Rahul"));
+         * ops.push_back(operation_);
+         * operation_ = BatchDBOp("put", verified::utils::StringToBytes("dob"), verified::utils::StringToBytes("7 September 1986"));
+         * ops.push_back(operation_);
+         * operation_ = BatchDBOp("put", verified::utils::StringToBytes("spouse"), verified::utils::StringToBytes("Priyanka"));
+         * ops.push_back(operation_);
+         * operation_ = BatchDBOp("put", verified::utils::StringToBytes("occupation"), verified::utils::StringToBytes("Trainer"));
+         * ops.push_back(operation_);
+         * Batch(ops);
+         * 
+         * @param op_stack stack of operations to be performed
+         */
         void Batch(const batchdboparray_t &op_stack);
         
+        /**
+         * @brief Checks if given root exists
+         * 
+         * @param root Root to be checked for existence
+         * @return true - root exists
+         * @return false - root does not exists
+         */
         bool CheckRoot(const buffer_t &root);
         
         /**
