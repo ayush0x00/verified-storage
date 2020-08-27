@@ -534,7 +534,7 @@ void VTrie::DeleteNode(const buffer_t &key, std::vector<node_t> &stack) {
 
     batchdboparray_t op_stack_;
 
-    auto key_ = verified::utils::ByteToNibble(key);
+    nibble_t key_ = verified::utils::ByteToNibble(key);
 
     if(parent_node_.empty()) {
         // the root here has to be leaf
@@ -551,6 +551,40 @@ void VTrie::DeleteNode(const buffer_t &key, std::vector<node_t> &stack) {
             }
 
             auto last_node_key_ = boost::get<Leaf>(last_node_).GetKey();
+            // delete the value
+            FormatNode(last_node_, op_stack_, false, true);
+            buffer_t empty_input_;
+            boost::get<Branch>(parent_node_).SetBranch(key_.back(), empty_input_);
+            key_.pop_back();
+            last_node_ = parent_node_;
+            parent_node_ = stack.back();
+            stack.pop_back();
+        }
+
+        // nodes on the branch 
+        // count the number of nodes on the branch
+        auto branch_nodes_ = boost::get<Branch>(last_node_).GetChildren();
+
+        // if there is only one branch node left collapse the branch node
+        if(branch_nodes_.size() == 1) {
+            // add the one remaining branch node to the node above it
+            uint_t branch_node_key_ = branch_nodes_.begin()->first;
+            buffer_t branch_node_ = branch_nodes_.begin()->second;
+
+            // lookup node
+            node_t found_node_ = LookupNode(branch_node_);
+            if(!found_node_.empty()) {
+                key_ = ProcessBranchNode(key_, branch_node_key_, found_node_, parent_node_, stack);
+                SaveStack(key_, stack, op_stack_);
+            }
+        } else {
+            // removing the leaf and recalculating stack
+            if(!parent_node_.empty()) {
+                stack.push_back(parent_node_);
+            }
+
+            stack.push_back(last_node_);
+            SaveStack(key_, stack, op_stack_);
         }
     }
 }

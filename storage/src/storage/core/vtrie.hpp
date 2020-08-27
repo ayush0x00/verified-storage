@@ -60,8 +60,24 @@ class VTrie {
          */
         void SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_t &op_stack);
         
+        /**
+         * @brief Process branch node before performing a delete operation
+         * 
+         * @param key key to be processed in a branch
+         * @param branchKey branch key
+         * @param branchNode branch node value
+         * @param parentNode parent node of the value
+         * @param stack stack of node
+         * @return nibble_t processed branch key
+         */
         nibble_t ProcessBranchNode(nibble_t &key, uint_t &branchKey, node_t &branchNode, node_t &parentNode, std::vector<node_t> &stack);
 
+        /**
+         * @brief deletes a node
+         * 
+         * @param key key to be deleted from the node
+         * @param stack stack of nodes
+         */
         void DeleteNode(const buffer_t &key, std::vector<node_t> &stack);
         
         /**
