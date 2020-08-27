@@ -292,8 +292,7 @@ class VTrie {
          * @return true If value deleted successfully
          * @return false If any error occures while deleting the value
          */
-        bool Delet(const buffer_t &key);
-
+        bool Delete(const buffer_t &key);
 
         bool Update(const buffer_t &key, const buffer_t &value);
 

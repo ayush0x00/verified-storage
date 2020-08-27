@@ -108,7 +108,7 @@ void VTrie::CreateInitialNode(const buffer_t &key, const buffer_t &value) {
     PutNode(node_);
 }
 
-bool VTrie::Delet(const buffer_t &key) {
+bool VTrie::Delete(const buffer_t &key) {
     // Todo Look for the lock and add lock before starting this process
     bool status_ = false;
     Path path_ = FindPath(key);
