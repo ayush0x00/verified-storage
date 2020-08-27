@@ -17,7 +17,7 @@ class Branch : public Node {
         void SetBranch(const int loc, const buffer_t &input);
         buffer_t GetBranch(const int input);
         buffer_array_t GetBranches();
-        std::map<int, buffer_t> GetChildren();
+        std::map<nibble_t, buffer_t> GetChildren();
 
         buffer_array_t Raw();
 };

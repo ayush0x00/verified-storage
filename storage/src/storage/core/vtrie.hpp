@@ -45,11 +45,16 @@ class VTrie {
          */
         void UpdateNode(const buffer_t &key, const buffer_t &value, nibble_t &key_reminder, std::vector<node_t> &stack);
 
-        void FindValueNodes(); // Todo need to check what should be passed as parameter
+        void OnFoundValues(const buffer_t &node_ref, const node_t &node, const nibble_t &key);
+        void OnFoundDb(const buffer_t &node_ref, const node_t &node, const nibble_t &key);
+
+        void FindValueNodes(const buffer_t &node_ref, node_t &node, const nibble_t &key);
         
-        void FindDbNodes(); // Todo need to check what should be passed as parameter
+        void FindDbNodes(const buffer_t &node_ref, const node_t &node, const nibble_t &key);
         
-        void WalkTrie(const buffer_t &root); // Todo need to check what should be passed as parameter
+        Path OnNode(nibble_t &target_key, const buffer_t &node_ref, node_t &node, const nibble_t &key_progress, std::vector<node_t> &stack);
+
+        Path WalkTrie(buffer_t &root, nibble_t &target_key);
         
         /**
          * @brief Saves a stack
@@ -70,7 +75,11 @@ class VTrie {
          * @param stack stack of node
          * @return nibble_t processed branch key
          */
-        nibble_t ProcessBranchNode(nibble_t &key, uint_t &branchKey, node_t &branchNode, node_t &parentNode, std::vector<node_t> &stack);
+        nibble_t ProcessBranchNode(nibble_t &key, const uint_t &branchKey, node_t &branchNode, node_t &parentNode, std::vector<node_t> &stack);
+
+        Path ProcessNode(const buffer_t &node_ref, node_t &node, const nibble_t &key, nibble_t &target_key);
+
+        void WalkController(nibble_t &target_key, const node_t &node, const nibble_t &key, std::string controller_type, const nibble_t &child_index);
 
         /**
          * @brief deletes a node

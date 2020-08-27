@@ -31,7 +31,7 @@ bool IsNonValue(T input) {
 }
 
 template<typename T>
-std::vector<T> Slice(const std::vector<T>& vect, int start, int end) {
+std::vector<T> Slice(const std::vector<T>& vect, std::size_t start, std::size_t end) {
     if(end = -1) {
        end = vect.size() - 1;
     }

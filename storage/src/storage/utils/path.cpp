@@ -1,9 +1,15 @@
 #include "path.hpp"
 
+Path::Path() {
+    // All the path values are empty
+    status_ = false;
+}
+
 Path::Path(const node_t &node, const nibble_t &remaining, const std::vector<node_t> &stack) {
     node_ = node;
     remaining_ = remaining;
     stack_ = stack;
+    status_ = !node.empty();
 }
 
 node_t Path::GetNode() {
@@ -28,4 +34,12 @@ std::vector<node_t> Path::GetStack() {
 
 void Path::SetStack(const std::vector<node_t> &stack) {
     stack_ = stack;
+}
+
+bool Path::GetStatus() {
+    return status_;
+}
+
+void Path::SetStatus(const bool status) {
+    status_ = status;
 }

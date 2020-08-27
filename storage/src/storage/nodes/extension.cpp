@@ -3,6 +3,11 @@
 #include <constants/enums.hpp>
 #include <utils/nibbles.hpp>
 
+Extension::Extension() {
+    // It's empty extension
+    node_type_ = EXTENSION_NODE;
+}
+
 Extension::Extension(nibble_t nibble, buffer_t value) {
     nibble_ = nibble;
     value_ = value;

@@ -8,6 +8,7 @@ class Extension : public Node {
         nibble_t nibble_;
 
     public:
+        Extension();
         Extension(nibble_t nibble, buffer_t value);
         // ~Extension();
 

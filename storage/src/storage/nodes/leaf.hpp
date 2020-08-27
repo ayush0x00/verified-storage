@@ -8,7 +8,7 @@ class Leaf : public Node {
         nibble_t nibbles_;
 
     public:
-        // Leaf();
+        Leaf();
         // ~Leaf();
 
         Leaf(nibble_t nibbles, buffer_t value);

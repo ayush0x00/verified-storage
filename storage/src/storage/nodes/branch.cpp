@@ -55,8 +55,8 @@ buffer_array_t Branch::Raw() {
     return raw_;
 }
 
-std::map<int, buffer_t> Branch::GetChildren() {
-    std::map<int, buffer_t> children_;
+std::map<nibble_t, buffer_t> Branch::GetChildren() {
+    std::map<nibble_t, buffer_t> children_;
     for(std::size_t i = 0; i <  16; i++) {
         auto branch_ = branches_.at(i);
         if(branch_.empty() && branch_.size()) {

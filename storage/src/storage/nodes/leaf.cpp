@@ -4,6 +4,11 @@
 #include <utils/nibbles.hpp>
 
 
+Leaf::Leaf() {
+    // It's empty leaf node
+    node_type_ = LEAF_NODE;
+}
+
 Leaf::Leaf(nibble_t nibbles, buffer_t value) {
     nibbles_ = nibbles;
     value_ = value;

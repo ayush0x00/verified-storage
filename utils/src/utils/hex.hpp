@@ -187,7 +187,7 @@ namespace verified {
          * @return std::vector<T> Sliced vector
          */
         template<typename T>
-        std::vector<T> Slice(const std::vector<T>& vect, int start, int end=-1);
+        std::vector<T> Slice(const std::vector<T>& vect, std::size_t start, std::size_t end=-1);
 
         /**
          * @brief Checks if the object is an instance of the Template class name

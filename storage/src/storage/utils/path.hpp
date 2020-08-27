@@ -11,8 +11,10 @@ class Path {
         node_t node_;
         nibble_t remaining_;
         std::vector<node_t> stack_;
+        bool status_;
 
     public:
+        Path();
         Path(const node_t &node, const nibble_t &remaining, const std::vector<node_t> &stack);
 
         node_t GetNode();
@@ -21,6 +23,8 @@ class Path {
         void SetRemaining(const nibble_t &remaining);
         std::vector<node_t> GetStack();
         void SetStack(const std::vector<node_t> &stack);
+        bool GetStatus();
+        void SetStatus(const bool status);
 };
 
 #endif

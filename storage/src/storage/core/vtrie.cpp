@@ -113,7 +113,8 @@ bool VTrie::Delete(const buffer_t &key) {
     bool status_ = false;
     Path path_ = FindPath(key);
     if(path_.GetNode().empty()) {
-        DeleteNode(key, path_.GetStack());
+        std::vector<node_t> stack_ = path_.GetStack();
+        DeleteNode(key, stack_);
         status_ = true;
     }
     // Todo release the lock
@@ -152,7 +153,7 @@ bool VTrie::Put(const buffer_t &key, const buffer_t &value) {
     bool status_ = false;
     if(value.empty() || verified::utils::BytesToString(value).empty()) {
         // If value is empty delete
-        status_ = Delet(key);
+        status_ = Delete(key);
     }
 
     // Todo Look for the lock and add lock before starting this process
@@ -445,7 +446,7 @@ void VTrie::SaveStack(nibble_t &key, std::vector<node_t> &stack, batchdboparray_
     Batch(op_stack);
 }
 
-nibble_t ProcessBranchNode(nibble_t &key, uint_t &branch_key, node_t &branch_node, node_t &parent_node, std::vector<node_t> &stack) {
+nibble_t ProcessBranchNode(nibble_t &key, const uint_t &branch_key, node_t &branch_node, node_t &parent_node, std::vector<node_t> &stack) {
     // branch node is the node ON the branch node not THE branch node
     if(parent_node.empty() || parent_node.which() == BRANCH_NODE) {
         if(!parent_node.empty()) {
@@ -458,7 +459,7 @@ nibble_t ProcessBranchNode(nibble_t &key, uint_t &branch_key, node_t &branch_nod
             nibble_t branch_key_list_;
             branch_key_list_.push_back(branch_key);
             buffer_t branch_value_;
-            const auto extension_node_ = Extension(branch_key_list_, branch_value_);
+            const Extension extension_node_ = Extension(branch_key_list_, branch_value_);
             stack.push_back(extension_node_);
             key.push_back(branch_key);
         } else {
@@ -568,13 +569,13 @@ void VTrie::DeleteNode(const buffer_t &key, std::vector<node_t> &stack) {
         // if there is only one branch node left collapse the branch node
         if(branch_nodes_.size() == 1) {
             // add the one remaining branch node to the node above it
-            uint_t branch_node_key_ = branch_nodes_.begin()->first;
+            nibble_t branch_node_key_ = branch_nodes_.begin()->first;
             buffer_t branch_node_ = branch_nodes_.begin()->second;
 
             // lookup node
             node_t found_node_ = LookupNode(branch_node_);
             if(!found_node_.empty()) {
-                key_ = ProcessBranchNode(key_, branch_node_key_, found_node_, parent_node_, stack);
+                key_ = ProcessBranchNode(key_, branch_node_key_.front(), found_node_, parent_node_, stack);
                 SaveStack(key_, stack, op_stack_);
             }
         } else {
@@ -606,23 +607,201 @@ bool VTrie::CheckRoot(const buffer_t &root) {
     return !node_.empty();
 }
 
+Path VTrie::ProcessNode(const buffer_t &node_ref, node_t &node, const nibble_t &key, nibble_t &target_key) {
+    Path path_;
+    if(!node.empty()) {
+        nibble_t child_index_;
+        std::vector<node_t> stack_;
+        path_ = OnNode(target_key, node_ref, node, key, stack_);
+    }
+    return path_;
+}
+
+void VTrie::WalkController(nibble_t &target_key, const node_t &node, const nibble_t &key, std::string controller_type, const nibble_t &child_index) {
+    if(controller_type == "next") {
+        if(node.which() == LEAF_NODE) {
+            // TODO add task executor and finish the processing
+            return;
+        }
+
+        std::map<nibble_t, buffer_t> children;
+        if(node.which() == EXTENSION_NODE) {
+            Extension node_ = boost::get<Extension>(node);
+            children.insert(std::pair<nibble_t, buffer_t>(node_.GetKey(), node_.GetValue()));
+        } else if(node.which() == BRANCH_NODE) {
+            Branch node_ = boost::get<Branch>(node);
+            children = node_.GetChildren();
+        }
+
+        if(children.empty()) {
+            // Node has no children
+            return;
+        }
+
+        for(auto child = children.begin(); child != children.end(); ++child) {
+            nibble_t key_extension_ = child->first;
+            buffer_t child_ref_ = child->second;
+            
+            nibble_t child_key_;
+            child_key_.reserve(key.size() + key_extension_.size());
+            child_key_.insert(child_key_.end(), key.begin(), key.end());
+            child_key_.insert(child_key_.end(), key_extension_.begin(), key_extension_.end());
+
+            size_t priority_ = child_key_.size();
+            // TODO add task executor
+            node_t child_node_ = this->LookupNode(child_ref_);
+            if(!child_node_.empty()) {
+                this->ProcessNode(child_ref_, child_node_, child_key_, target_key);
+            }
+        }
+    } else if(controller_type == "only") {
+        if(node.which() != BRANCH_NODE) {
+            std::logic_error("Expected branch node.");
+        }
+
+        Branch branch_ = boost::get<Branch>(node);
+        buffer_t child_ref_ = branch_.GetBranch(child_index.front());
+        if(child_ref_.empty()) {
+            std::logic_error("Could not get branch of the child index");
+        }
+
+        nibble_t child_key_;
+        child_key_.reserve(key.size());
+        child_key_.insert(child_key_.end(), key.begin(), key.end());
+        child_key_.push_back(child_index.front());
+
+        size_t priority_ = child_key_.size();
+        // TODO add task executor
+        node_t child_node_ = this->LookupNode(child_ref_);
+        if(!child_node_.empty()) {
+            this->ProcessNode(child_ref_, child_node_, child_key_, target_key);
+        } else {
+            // could not find the chlid node
+            std::logic_error("Could not find the child node.");
+        }
+    }
+}
+
 Path VTrie::FindPath(const buffer_t &key) {
-    std::vector<node_t> stack_;
     nibble_t target_key_ = verified::utils::ByteToNibble(key);
 
-    // nibble_t key_reminder_ = verified::utils::Slice(target_key_, verified::utils::MatchingNibbleLength());
+    Path path_ = WalkTrie(_root, target_key_);
+    if(!path_.GetStatus()) {
+        Node empty_node_;
+        nibble_t empty_remaining_;
+        std::vector<node_t> empty_stack_;
+        path_ = Path(empty_node_, empty_remaining_, empty_stack_);
+    }
+
+    return path_;
 }
 
-void VTrie::FindValueNodes() {
+Path VTrie::OnNode(nibble_t &target_key, const buffer_t &node_ref, node_t &node, const nibble_t &key_progress, std::vector<node_t> &stack) {
+    int start_ = verified::utils::MatchingNibbleLength(key_progress, target_key);
+    nibble_t key_reminder_ = verified::utils::Slice(target_key, start_);
+    stack.push_back(node);
 
+    Path path_;
+    if(node.which() == BRANCH_NODE) {
+        if(key_reminder_.empty()) {
+            // We exhausted the key without finding the node.
+            // std::logic_error("We exhausted the key without finding the node.");
+            path_ = Path(node, key_reminder_, stack);
+        } else {
+            uint_t branch_index_ = key_reminder_.front();
+            buffer_t branch_node_ = boost::get<Branch>(node).GetBranch((int)branch_index_);
+            if(branch_node_.empty()) {
+                // "There are no more nodes to find and we didn't find the key.
+                // std::logic_error("There are no more nodes to find and we didn't find the key");
+                Branch empty_branch_;
+                path_ = Path(empty_branch_, key_reminder_, stack);
+            } else {
+                // node found continuing search
+                nibble_t child_index_ {branch_index_};
+                this->WalkController(target_key, node, key_progress, "only", child_index_);
+            }
+        }
+    } else if(node.which() == LEAF_NODE) {
+        Leaf leaf_node_ = boost::get<Leaf>(node);
+        nibble_t leaf_node_keys_ = leaf_node_.GetKey();
+        if(verified::utils::DoKeysMatch(key_reminder_, leaf_node_keys_)) {
+            // Keys match return node with empty key
+            nibble_t empty_remaining_;
+            path_ = Path(node, empty_remaining_, stack);
+        } else {
+            // reached leaf but keys don't match
+            Leaf empty_leaf_;
+            path_ = Path(empty_leaf_, key_reminder_, stack);
+        }
+    } else if(node.which() == EXTENSION_NODE) {
+        Extension extension_node_ = boost::get<Extension>(node);
+        auto matching_length_ = verified::utils::MatchingNibbleLength(key_reminder_, extension_node_.GetKey());
+        if(matching_length_ != extension_node_.GetKey().size()) {
+            // Keys don't match, failed
+            Extension empty_extension_;
+            path_ = Path(empty_extension_, key_reminder_, stack);
+        } else {
+            // keys match, continue search.
+            nibble_t empty_child_index_;
+            this->WalkController(target_key, node, key_progress, "next", empty_child_index_);
+        }
+    }
+
+    return path_;
 }
 
-void VTrie::FindDbNodes() {
+void VTrie::OnFoundValues(const buffer_t &node_ref, const node_t &node, const nibble_t &key) {}
+void VTrie::OnFoundDb(const buffer_t &node_ref, const node_t &node, const nibble_t &key) {}
 
+void VTrie::FindValueNodes(const buffer_t &node_ref, node_t &node, const nibble_t &key) {
+    nibble_t full_key_;
+    full_key_.reserve(key.size());
+    full_key_.insert(full_key_.end(), key.begin(), key.end());
+
+    if(node.which() == LEAF_NODE) {
+        nibble_t leaf_node_key_ = boost::get<Leaf>(node).GetKey();
+        full_key_.insert(full_key_.end(), leaf_node_key_.begin(), leaf_node_key_.end());
+
+        // found a leaf node
+        OnFoundValues(node_ref, node, full_key_);
+    } else if(node.which() == BRANCH_NODE) {
+        // found branch with value
+        OnFoundValues(node_ref, node, full_key_);
+    } else {
+        // keep looking for value nodes
+        nibble_t empty_child_index_;
+        // WalkController(key, node, full_key_, "next", empty_child_index_);
+    }
 }
 
-void VTrie::WalkTrie(const buffer_t &root) {
-    nibble_t key_reminder_ = verified::utils::Slice(target_key_, verified::utils::MatchingNibbleLength());
+void VTrie::FindDbNodes(const buffer_t &node_ref, const node_t &node, const nibble_t &key) {
+    if(IsRawNode(node_ref)) {
+        nibble_t empty_child_index_;
+        // WalkController(key, node, key, "next", empty_child_index_);
+    } else {
+        OnFoundDb(node_ref, node, key);
+    }
+
+    // WalkTrie(_root, key);
+}
+
+Path VTrie::WalkTrie(buffer_t &root, nibble_t &target_key) {
+    Path path_;
+    root = !root.empty() ? root : _root;
+    if(root == _EMPTY_TRIE_ROOT) {
+        std::logic_error("Provided root is empty");
+        return path_;
+    }
+
+    // @TODO add task executor
+
+    node_t node = LookupNode(_root);
+    if(!node.empty()) {
+        nibble_t empty_node_;
+        path_ = ProcessNode(_root, node, empty_node_, target_key);
+    }
+
+    return path_;
 }
 
 buffer_t VTrie::Select(const buffer_t &root_hash, const buffer_t &key) {
