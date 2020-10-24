@@ -284,15 +284,14 @@ class VTrie {
         bool Put(const buffer_t &key, const buffer_t &value);
         
         /**
-         * @brief Alias for Put.
+         * @brief Simpler version of Put
          * Stores a given value at the given key
          * 
          * @param key key to store
          * @param value Value to be stored at the key
-         * @return true if value is stored
-         * @return false if any error occurs while storing the value at key
+         * @return key hash if successfull else error
          */
-        bool Insert(const buffer_t &key, const buffer_t &value);
+        std::string Insert(const std::string &key, const std::string &value);
 
         /**
          * @brief Deletes value given a key

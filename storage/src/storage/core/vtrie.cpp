@@ -145,8 +145,15 @@ buffer_t VTrie::Select(const buffer_t &key) {
     return value_;
 }
 
-bool VTrie::Insert(const buffer_t &key, const buffer_t &value) {
-    return Put(key, value);
+std::string VTrie::Insert(const std::string &key, const std::string &value) {
+    buffer_t key_ = verified::utils::StringToBytes(key);
+    buffer_t value_ = verified::utils::StringToBytes(value);
+    bool status_ = Put(key_, value_);
+    if (!status_) {
+        // return error
+    }
+    
+    return verified::utils::BytesToString(key_);
 }
 
 bool VTrie::Put(const buffer_t &key, const buffer_t &value) {
